@@ -1,0 +1,39 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+    provider = "prisma-client-js"
+}
+
+datasource db {
+    provider = "sqlite"
+    url      = env("DATABASE_URL")
+}
+
+model Tag {
+    id     Int     @id @default(autoincrement())
+    title  String  @unique
+    events Event[]
+}
+
+model Calendar {
+    id      Int     @id @default(autoincrement())
+    title   String
+    url     String
+    tags    String
+    website String
+    events  Event[]
+}
+
+model Event {
+    id          Int      @id @default(autoincrement())
+    summary     String
+    description String
+    start       DateTime
+    end         DateTime
+    url         String
+    imageUrl    String
+    calendarId  Int
+    tags        Tag[]
+    Calendar    Calendar @relation(fields: [calendarId], references: [id])
+}
