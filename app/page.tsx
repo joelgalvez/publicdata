@@ -1,4 +1,5 @@
 import prisma from '../lib/prisma'
+import Link from 'next/link'
 
 export default async function Home() {
 
@@ -9,7 +10,9 @@ export default async function Home() {
     <main className="grid grid-cols-3 gap-8 m-8">
       {events.map(event => {
         return (
-          <div key={event.id} className={'border-t-2 py-1 border-white min-h-[12rem] ' + (event.imageUrl ? 'row-span-4' : 'row-span-2')} >
+          <Link
+            href={`/event/${event.id}`}
+            key={event.id} className={'block border-t-2 py-1 border-white min-h-[12rem] ' + (event.imageUrl ? 'row-span-4' : 'row-span-2')} >
             <div className=" mb-2">
               {event.Calendar.title}
             </div>
@@ -20,7 +23,7 @@ export default async function Home() {
             <div className="">
               <img src={event.imageUrl} alt="" />
             </div>
-          </div>
+          </Link>
         )
       })}
     </main >
