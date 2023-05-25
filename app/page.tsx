@@ -1,4 +1,23 @@
 import prisma from '../lib/prisma'
+<<<<<<< Updated upstream
+=======
+import Link from 'next/link'
+//import TagFilter from '../features/components/tags.tsx'
+
+function TagFilter () {
+  return (
+    <div className='f_wrapper bg-red-400 block h-1/2'>
+      asasas
+    </div>
+  );
+}
+
+export function FilterNav () {
+  return (
+    <TagFilter />
+  );
+}
+>>>>>>> Stashed changes
 
 export default async function Home() {
 
