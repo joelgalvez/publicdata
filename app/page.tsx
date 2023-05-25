@@ -15,6 +15,9 @@ export default async function Home() {
             key={event.id} className={'block border-t-2 py-1 border-white min-h-[12rem] ' + (event.imageUrl ? 'row-span-4' : 'row-span-2')} >
             <div className=" mb-2">
               {event.Calendar.title}
+              <div>
+                {event.start.toString()} - {event.end.toString()}
+              </div>
             </div>
             <div className="text-2xl mb-4 ">
               {event.summary}

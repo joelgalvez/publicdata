@@ -58,19 +58,26 @@ export async function GET(request) {
 
             for (let e of allEvents) {
 
-                const ret2 = await prisma.event.create({
-                    data: {
-                        // calendar: calendar,
-                        calendarId: calendar.id,
-                        summary: e.summary ? e.summary : '',
-                        description: e.description ? e.description : '',
-                        start: "2022-01-20T12:01:30.543Z",
-                        end: "2022-01-23T12:01:30.543Z",
-                        url: e.url ? e.url : '',
-                        // lastUpdated: "2022-01-23T12:01:30.543Z",
-                        imageUrl: e.imageUrl ? e.imageUrl : ''
-                    }
-                })
+                console.log('startdate', JSON.stringify(e, e.startDate, null, 4));
+
+                const start = new Date(e.startDate);
+                const end = new Date(e.endDate);
+                // const end = `${e.endDate.year}-${e.endDate.month}-${e.endDate.day}T${e.endDate.hour}:${e.endDate.minute}:00`;
+
+                let data = {
+                    // calendar: calendar,
+                    calendarId: calendar.id,
+                    summary: e.summary ? e.summary : '',
+                    description: e.description ? e.description : '',
+                    start: start,
+                    // start: "2022-01-20T12:01:30.543Z",
+                    end: end,
+                    // end: "2022-01-23T12:01:30.543Z",
+                    url: e.url ? e.url : '',
+                    // lastUpdated: "2022-01-23T12:01:30.543Z",
+                    imageUrl: e.imageUrl ? e.imageUrl : ''
+                }
+                const ret2 = await prisma.event.create({ data })
                 total++;
 
 
