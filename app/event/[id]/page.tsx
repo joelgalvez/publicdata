@@ -1,33 +1,72 @@
 import prisma from '../../../lib/prisma'
 
+//custom styles here
+import styles from './template.module.css'
+
+const formatedDate = (date) => {
+    const options = { 
+        weekday: "long", 
+        year: "numeric", 
+        month: "long", 
+        day: "numeric", 
+        hour: "numeric", 
+        minute: "numeric", 
+        hour12: false, 
+        timeZone: "CET" 
+    };
+    const dateTimeFormat = new Intl.DateTimeFormat('en-US', options);
+
+    const parts = dateTimeFormat.formatToParts(date);
+    const partValues = parts.map(p => p.value);
+
+    return partValues;
+}
+
 export default async function Page({ params }) {
     const event = await getEvent(parseInt(params.id, 10));
     return (
-        <div>
+        <div className="event_wrapper font-sans px-5">
             {/*<pre>
                 {JSON.stringify(event, null, 4)}
             </pre>*/}
             
-            <div className="mb-2">
-                {event.Calendar.title}
-            </div>
+            <header className={styles.event_header}>
 
-            <div className="text-2xl mb-4 ">
-                {event.summary}
-            </div>
+                <hgroup className="text-center">
+                    <h4 className="text-sm font-thin mb-2 uppercase tracking-wider">
+                        {event.Calendar.title}
+                    </h4>
 
-            <div className="grid grid-cols-2 gap-4 text-xs mb-4">
-                <p>{event.start.toString()}</p>
-                <p>{event.end.toString()}</p>
-            </div>
+                    <h1 className="text-7xl mb-4">
+                        {event.summary}
+                    </h1>
+                </hgroup>
 
-            <div className="mb-4 w-100">
-                <img src={event.imageUrl} alt="" />
-            </div>
+                <div className="event_period text-sm grid grid-cols-2 gap-10 mb-4 uppercase">
 
-            <div className="">
-                {event.description}
-            </div>
+                    <p className="text-left flex">
+                        {formatedDate(event.start).slice(0,7)}<br/>
+                        {formatedDate(event.start).slice(7,11)}
+                    </p>                  
+
+                    <p className="text-right flex justify-end">
+                        {formatedDate(event.end).slice(0,7)}<br/>
+                        {formatedDate(event.end).slice(7,11)}
+                    </p>
+
+                </div>
+
+            </header>
+
+            <article className={styles.event_content}>
+
+                <img className="mb-4 w-fit mx-auto" src={event.imageUrl} alt="" />
+
+                <p className="text-3xl px-8">
+                    {event.description}
+                </p>
+
+            </article>
         </div>
     );
 }

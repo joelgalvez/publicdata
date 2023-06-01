@@ -1,0 +1,24 @@
+.event_header {
+  font-family: Helvetica, Arial, sans-serif;
+}
+
+.event_header h4 {
+  font-family: 'Times New Roman', Times, serif;
+}
+
+.event_header p:before {
+  font-family: 'Times New Roman', Times, serif;
+  font-size: xx-small;
+  padding-right: 5px;
+  content: 'End';
+  position: relative;
+  top: -2px;
+}
+
+.event_header p:first-child:before {
+  content: 'Start';
+}
+
+.event_content p {
+    font-family: 'Times New Roman', Times, serif;
+  }
