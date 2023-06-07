@@ -33,7 +33,7 @@ model Event {
     end         DateTime
     url         String
     imageUrl    String
-    calendarId  Int
     tags        Tag[]
-    Calendar    Calendar @relation(fields: [calendarId], references: [id])
+    calendarId  Int
+    calendar    Calendar @relation(fields: [calendarId], references: [id])
 }

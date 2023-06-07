@@ -14,7 +14,11 @@ export async function GET(request) {
     // const userId = await getUserId(token)
     // const prisma = new PrismaClient()
 
-    const ret = await prisma.event.deleteMany({});
+    const ret = await prisma.event.deleteMany({
+        // where: {
+
+        // }
+    });
 
     const calendars = await prisma.calendar.findMany({
     });
@@ -50,7 +54,11 @@ export async function GET(request) {
                 }
             ));
 
-            const mappedOccurrences = events.occurrences.map(o => ({ startDate: o.startDate, summary: o.item.summary }));
+            const mappedOccurrences = events.occurrences.map(o => ({
+                startDate: o.startDate,
+                endDate: o.endDate,
+                summary: o.item.summary
+            }));
             const allEvents = [].concat(mappedEvents, mappedOccurrences);
 
             // console.log('delete where calendarId ' + calendar.id);
@@ -58,7 +66,14 @@ export async function GET(request) {
 
             for (let e of allEvents) {
 
-                console.log('startdate', JSON.stringify(e, e.startDate, null, 4));
+                // console.log('startdate', JSON.stringify(e, e.startDate, null, 4));
+
+                response += 'Processing ' + e.summary + "\n";
+
+
+                console.log(e.startDate);
+                console.log(e.endDate);
+
 
                 const start = new Date(e.startDate);
                 const end = new Date(e.endDate);
@@ -87,7 +102,7 @@ export async function GET(request) {
 
 
         } catch (e) {
-            response += e + "\n";
+            response += 'ERR:' + e + "\n";
         }
     }
 

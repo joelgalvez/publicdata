@@ -5,7 +5,6 @@ export default async function Home() {
 
   const events = await getEvents();
 
-
   return (
     <main className="grid grid-cols-3 gap-8 m-8">
       {events.map(event => {
@@ -14,7 +13,7 @@ export default async function Home() {
             href={`/event/${event.id}`}
             key={event.id} className={'block border-t-2 py-1 border-white min-h-[12rem] ' + (event.imageUrl ? 'row-span-4' : 'row-span-2')} >
             <div className=" mb-2">
-              {event.Calendar.title}
+              {event.calendar.title}
               <div>
                 {event.start.toString()} - {event.end.toString()}
               </div>
@@ -37,7 +36,7 @@ export default async function Home() {
 async function getEvents() {
   return await prisma.event.findMany({
     include: {
-      Calendar: true
+      calendar: true
     }
   });
 }
