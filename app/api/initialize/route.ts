@@ -9,13 +9,15 @@ import prisma from '../../../lib/prisma'
 export async function GET(request) {
 
     try {
-        const ret = await prisma.calendar.deleteMany({});
 
+        await prisma.calendar.deleteMany({});
 
         let f = await fetch('https://publicdata.events/list/amsterdamart/')
             .then(response => response.json())
 
         let total = 0;
+
+        let tags = ['Art', 'Amsterdam'];
 
         for (let l of f) {
 
@@ -24,14 +26,19 @@ export async function GET(request) {
                     data: {
                         website: l.website ? l.website : '',
                         title: l.title,
-                        tags: 'Amsterdam,Art',
-                        url: l.ics
+                        url: l.ics,
+                        tags: {
+                            connectOrCreate: tags.map((tag) => {
+                                return {
+                                    where: { title: tag },
+                                    create: { title: tag },
+                                };
+                            }),
+                        }
                     }
                 })
                 total++;
-
             }
-
         }
 
         return new Response('ok');
