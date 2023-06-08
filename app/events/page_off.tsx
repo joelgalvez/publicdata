@@ -4,15 +4,11 @@ import Link from 'next/link'
 export default async function Home() {
 
   const events = await getEvents();
-
-
   return (
     <div className="grid grid-cols-3 gap-8 m-8">
       {events.map(event => {
         return (
-          <Link
-            href={`/event/${event.id}`}
-            key={event.id} className={'block border-t-2 py-1 border-white min-h-[12rem] ' + (event.imageUrl ? 'row-span-4' : 'row-span-2')} >
+          <div key={event.id} className={'border-t-2 py-1 border-white min-h-[12rem] ' + (event.imageUrl ? 'row-span-4' : 'row-span-2')} >
             <div className=" mb-2">
               {event.Calendar.title}
             </div>
@@ -23,7 +19,7 @@ export default async function Home() {
             <div className="">
               <img src={event.imageUrl} alt="" />
             </div>
-          </Link>
+          </div>
         )
       })}
     </div >
@@ -31,4 +27,17 @@ export default async function Home() {
 }
 
 
-
+async function getEvents() {
+  return await prisma.event.findMany({
+    include: {
+      Calendar: true
+    }
+  });
+}
+async function getCalendar(id) {
+  return await prisma.calendar.findFirst({
+    where: {
+      id: id
+    }
+  });
+}
