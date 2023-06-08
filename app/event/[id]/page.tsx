@@ -25,12 +25,14 @@ const formatedDate = (date) => {
 export default async function Page({ params }) {
     const event = await getEvent(parseInt(params.id, 10));
     return (
-        <div className="event_wrapper font-sans px-5">
+        <div className="event_wrapper font-sans px-5 p-10 pt-5">
             {/*<pre>
                 {JSON.stringify(event, null, 4)}
             </pre>*/}
             
             <header className={styles.event_header}>
+
+                <a className='underline font-serif text-xs absolute top-5 left-5 uppercase' href='../../../'>&larr; Back</a>
 
                 <hgroup className="text-center">
                     <h4 className="text-sm font-thin mb-2 uppercase tracking-wider">
@@ -62,7 +64,7 @@ export default async function Page({ params }) {
 
                 <img className="mb-4 w-fit mx-auto" src={event.imageUrl} alt="" />
 
-                <p className="text-3xl px-8">
+                <p className="text-3xl px-8 mt-10">
                     {event.description}
                 </p>
 
