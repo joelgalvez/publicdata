@@ -34,7 +34,7 @@ export default async function Page({ params }) {
 
                 <hgroup className="text-center">
                     <h4 className="text-sm font-thin mb-2 uppercase tracking-wider">
-                        {event.Calendar.title}
+                        {event.calendar.title}
                     </h4>
 
                     <h1 className="text-7xl mb-4">
@@ -74,7 +74,7 @@ export default async function Page({ params }) {
 async function getEvent(id: Number) {
     return await prisma.event.findFirst({
         include: {
-            Calendar: true
+            calendar: true
         },
         where: {
             id: id
