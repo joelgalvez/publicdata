@@ -27,7 +27,7 @@ model TagGroup {
 model Calendar {
     id      Int     @id @default(autoincrement())
     title   String
-    url     String
+    url     String  @unique
     website String
     events  Event[]
     tags    Tag[]

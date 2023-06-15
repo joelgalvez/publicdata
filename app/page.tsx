@@ -58,7 +58,6 @@ export default async function Home() {
   )
 }
 
-
 async function getEvents(start: Date, end: Date) {
   return await prisma.event.findMany({
     where: {
