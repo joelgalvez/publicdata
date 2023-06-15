@@ -15,6 +15,13 @@ model Tag {
     title     String     @unique
     events    Event[]
     calendars Calendar[]
+    tagGroups TagGroup[]
+}
+
+model TagGroup {
+    id    Int    @id @default(autoincrement())
+    title String @unique
+    tags  Tag[]
 }
 
 model Calendar {
@@ -27,7 +34,7 @@ model Calendar {
 }
 
 model Event {
-    id          Int      @id @default(autoincrement())
+    id          Int       @id @default(autoincrement())
     summary     String
     description String
     start       DateTime
@@ -35,6 +42,7 @@ model Event {
     url         String
     imageUrl    String
     tags        Tag[]
-    calendarId  Int
-    calendar    Calendar @relation(fields: [calendarId], references: [id])
+    calendarId  Int?
+    calendar    Calendar? @relation(fields: [calendarId], references: [id])
+    sourceType  String
 }

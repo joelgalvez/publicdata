@@ -17,6 +17,11 @@ export default async function Home() {
   let endTomorrow = moment().add(2, 'days').startOf('day').add(4, 'hours').toDate();
   const tomorrow = await getEvents(startTomorrow, endTomorrow);
 
+  let startWeek = moment().startOf('day').toDate();
+  let endWeek = moment().add(300, 'days').startOf('day').add(4, 'hours').toDate();
+  const week = await getEvents(startWeek, endWeek);
+
+
   return (
     <>
       <h1 className="m-4 text-6xl">Today</h1>
@@ -32,6 +37,16 @@ export default async function Home() {
       <h1 className="m-4 text-6xl">Tomorrow</h1>
       <div className="grid grid-cols-3 gap-8 m-4">
         {tomorrow.map(event => {
+          return (
+            <div className="">
+              <EventLead event={event} key={event.id}></EventLead>
+            </div>
+          )
+        })}
+      </div>
+      <h1 className="m-4 text-6xl">Week</h1>
+      <div className="grid grid-cols-3 gap-8 m-4">
+        {week.map(event => {
           return (
             <div className="">
               <EventLead event={event} key={event.id}></EventLead>
