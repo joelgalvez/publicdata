@@ -4,10 +4,9 @@ import moment from 'moment';
 import EventLead from './components/EventLead';
 import EventDate from './components/EventDate';
 import Day from './components/Day';
+import { Darumadrop_One } from 'next/font/google';
 
 export default async function Home() {
-
-
 
   let days = [];
   for (let dayCount = 0; dayCount < 6; dayCount++) {
@@ -21,9 +20,21 @@ export default async function Home() {
     });
   }
 
+  let monthStart = moment().add(6, 'days').startOf('day').add(4, 'hours').toDate();
+  let monthEnd = moment().add(36, 'days').startOf('day').add(4, 'hours').toDate();
+
+  const month = await getEvents(monthStart, monthEnd);
+
+  console.log(monthStart);
+  console.log(monthEnd);
+
+
+  // let month = await getEvents(monthStart, monthEnd);
+
 
   return (
     <>
+
       {days.map(day => {
         return (
           <div className="">
@@ -38,6 +49,18 @@ export default async function Home() {
           </div>
         )
       })}
+
+      <div className="">
+        <h2 className="text-6xl m-4 mt-16"><Day date={monthStart} endDate={monthEnd} /></h2>
+        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 m-4">
+          {month.map(event => {
+            return (
+              <EventLead event={event} />
+            )
+          })}
+        </div>
+      </div>
+
     </>
   )
 }
