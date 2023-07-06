@@ -45,7 +45,7 @@ export async function GET(request) {
                             end = new Date(event.endDate);
                         }
 
-                        console.log('Tag-addr: ' + venueInner.address.addressLocality);
+                        // console.log('Tag-addr: ' + venueInner.address.addressLocality);
 
 
                         const r = await prisma.event.create({

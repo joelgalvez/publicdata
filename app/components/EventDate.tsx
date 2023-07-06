@@ -1,10 +1,10 @@
 import Link from 'next/link'
 import moment from 'moment';
 
-EventDate.propTypes = {
-    start: Date,
-    end: Date
-}
+// EventDate.propTypes = {
+//     start: Date,
+//     end: Date
+// }
 
 export default function EventDate(props) {
 

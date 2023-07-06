@@ -22,3 +22,7 @@ body {
       transparent,
       rgb(var(--background-end-rgb))) rgb(var(--background-start-rgb));
 }
+
+.text p+p {
+  @apply mt-4;
+}

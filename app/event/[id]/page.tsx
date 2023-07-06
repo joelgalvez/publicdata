@@ -18,7 +18,7 @@ export default async function Page({ params }) {
 
                 <hgroup className="text-center">
                     {event.calendar &&
-                        <h4 className="text-sm font-thin mb-2 uppercase tracking-wider">
+                        <h4 className="">
                             {event.calendar.title}
                         </h4>
                     }
@@ -26,7 +26,11 @@ export default async function Page({ params }) {
                     <h1 className="text-7xl mb-4">
                         {event.summary}
                     </h1>
+
+                    <a className="m-4 block underline max-w-[20rem] mx-auto truncate" target="_blank" href={event.url ? event.url : event?.calendar.website}>{event.url ? event.url : event?.calendar.website}</a>
                 </hgroup>
+
+
 
                 <div className="m-4 text-center">
                     <EventDate start={event.start} end={event.end}></EventDate>
@@ -34,22 +38,22 @@ export default async function Page({ params }) {
 
             </header>
 
-            <article className="">
+            <article className="max-w-[50rem] mx-auto">
 
                 {event.imageUrl &&
                     <img className="mb-4 w-fit mx-auto" src={event.imageUrl} alt="" />
                 }
 
-                <p className="text-3xl px-8">
-                    {event.description}
-                </p>
+                <div className="text text-xl px-8" dangerouslySetInnerHTML={{ __html: event.description }}>
+
+                </div>
 
             </article>
         </div>
     );
 }
 
-async function getEvent(id: Number): Event {
+async function getEvent(id: Number) {
     return await prisma.event.findFirst({
         include: {
             calendar: true

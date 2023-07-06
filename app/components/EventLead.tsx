@@ -8,25 +8,26 @@ export default function EventLead(props) {
 
     return (
 
-        <Link href={`/event/${event.id}`} className={'block border-t-2 py-1 border-white min-h-[12rem] ' + (event.imageUrl ? 'row-span-4' : 'row-span-2')} >
+        <Link href={`/event/${event.id}`} className={'block border-t-2 py-1 border-white min-h-[12rem]'}>
             <div className=" mb-2">
                 {event.calendar &&
-                    <div className="mb-2">{event.calendar.title}</div>
+                    <div className="flex h-12 my-2 items-center gap-3">
+                        <div className="w-[2rem] flex items-center justify-center">
+                            <img className="" src={`https://www.google.com/s2/favicons?domain=${event.calendar.website}&sz=256`} alt="" />
+                        </div>
+                        <div className="">{event.calendar.title}</div>
+                    </div>
                 }
                 <div>
                     <EventDate start={event.start} end={event.end}></EventDate>
                 </div>
             </div>
-            <div className="text-2xl mb-4 ">
+            <div className="text-2xl mb-4">
                 {event.summary}
             </div>
-            <div className="text-sm">
-                {event.description}
+            <div className="text-sm mb-4">
+                {event.description.replace(/(<([^>]+)>)/gi, "").substring(0, 100)}...
             </div>
-            {/* <pre class="whitespace-break-spaces">
-                {JSON.stringify(event, null, 4)}
-
-            </pre> */}
             <div className="">
                 {event.imageUrl &&
                     <img src={event.imageUrl} alt="" />

@@ -16,7 +16,7 @@ export async function GET(request: Request, context: { params }) {
 }
 
 async function getEvent(id: Number) {
-    console.log(id)
+
     return await prisma.event.findFirst({
         include: {
             Calendar: true
