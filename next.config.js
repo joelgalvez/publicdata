@@ -22,6 +22,15 @@ const nextConfig = {
                     },
                 ],
             },
+            {
+                source: '/api/subscribe',
+                headers: [
+                    {
+                        key: 'Content-type',
+                        value: 'text/calendar',
+                    },
+                ],
+            },
         ];
     },
 }

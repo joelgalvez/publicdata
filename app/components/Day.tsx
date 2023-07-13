@@ -15,7 +15,7 @@ export default function Day(props: Props) {
     let today = new Date();
     let endDateString = '';
     if (endDate) {
-        endDateString = endDate ? ' – ' + moment(endDate).format('DD MMM') : '';
+        endDateString = endDate ? ' – ' + moment(endDate).format('DD MMM YYYY') : '';
     }
 
     if (

@@ -71,8 +71,8 @@ export async function GET(request) {
                 response += 'Processing ' + e.summary + "\n";
 
 
-                console.log(e.startDate);
-                console.log(e.endDate);
+                // console.log(e.startDate);
+                // console.log(e.endDate);
 
 
                 const start = new Date(e.startDate);

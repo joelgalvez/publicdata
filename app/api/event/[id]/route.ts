@@ -19,7 +19,7 @@ async function getEvent(id: Number) {
 
     return await prisma.event.findFirst({
         include: {
-            Calendar: true
+            calendar: true
         },
         where: {
             id: id
