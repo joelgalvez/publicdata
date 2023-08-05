@@ -31,6 +31,7 @@ model Calendar {
     website String
     events  Event[]
     tags    Tag[]
+    lists   List[]
 }
 
 model Event {
@@ -45,4 +46,10 @@ model Event {
     calendarId  Int?
     calendar    Calendar? @relation(fields: [calendarId], references: [id])
     sourceType  String
+}
+
+model List {
+    id        Int        @id @default(autoincrement())
+    title     String
+    calendars Calendar[]
 }

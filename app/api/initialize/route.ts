@@ -11,12 +11,16 @@ import IcalExpander from 'ical-expander';
 // import path from 'path';
 // import IcalExpander from 'ical-expander';
 
-async function getCal(ics: string) {
+async function expandIcs(ics: string) {
+
+}
+
+async function getCal(allExport: string) {
 
     let response = '';
 
 
-    let f = await fetch(ics)
+    let f = await fetch(allExport)
         .then(response => response.json())
 
     let totalCalendars = 0;
@@ -44,7 +48,6 @@ async function getCal(ics: string) {
                         }
                     }
                 })
-
 
 
                 // const res = await fetch('https://jgdev.xyz/rr.ics');
