@@ -89,7 +89,8 @@ async function getEvents(start: Date, end: Date) {
       }
     },
     include: {
-      calendar: true
+      calendar: true,
+      tags: true
     },
     orderBy: {
       start: 'asc'

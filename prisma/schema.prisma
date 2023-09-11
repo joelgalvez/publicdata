@@ -51,5 +51,6 @@ model Event {
 model List {
     id        Int        @id @default(autoincrement())
     title     String
+    name      String     @unique
     calendars Calendar[]
 }

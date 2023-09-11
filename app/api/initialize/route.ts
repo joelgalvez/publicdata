@@ -11,35 +11,18 @@ import IcalExpander from 'ical-expander';
 // import path from 'path';
 // import IcalExpander from 'ical-expander';
 
-async function expandIcs(ics: string) {
-
-}
-
-async function getCal(allExport: string) {
-
-    let response = '';
-
-
-    let f = await fetch(allExport)
-        .then(response => response.json())
-
-    let totalCalendars = 0;
-    let totalEvents = 0;
-
-    // let tags = ['Art', 'Amsterdam'];
-
-    for (let l of f) {
-        if (l.ics != '') {
-            let calendar = null;
+async function getCalendars(allCalendars) {
+    for (let cal of allCalendars) {
+        if (cal.ics != '') {
+            let prismaCalendar = null;
             try {
-                // return;
-                calendar = await prisma.calendar.create({
+                prismaCalendar = await prisma.calendar.create({
                     data: {
-                        website: l.webpage ? l.webpage : '',
-                        title: l.title,
-                        url: l.ics,
+                        website: cal.webpage ? cal.webpage : '',
+                        title: cal.title,
+                        url: cal.ics,
                         tags: {
-                            connectOrCreate: l.tags.map((tag: String) => {
+                            connectOrCreate: cal.tags.map((tag: String) => {
                                 return {
                                     where: { title: tag },
                                     create: { title: tag },
@@ -49,65 +32,17 @@ async function getCal(allExport: string) {
                     }
                 })
 
-
-                // const res = await fetch('https://jgdev.xyz/rr.ics');
-                // const dir = path.join(process.cwd(), 'ics-cache');
-                // let file = dir + '/cal-cache-' + calendar.id + '.ics';
-                // const fileContents = await fs.readFile(file, 'utf8');
-
                 let fileContents = '';
-                await fetch(l.ics)
+                await fetch(cal.ics)
                     .then(response => response.text())
                     .then(text => {
                         fileContents = text;
                     });
 
-                const icalExpander = new IcalExpander({ ics: fileContents, maxIterations: 100 });
-                const events = icalExpander.between(new Date('2023-05-24T00:00:00.000Z'), new Date('2023-12-31T00:00:00.000Z'));
 
-                //ew, please someone tell me how to do this properly
+                let eventsPerCalendar = await expandIcs(fileContents);
 
-                for (let event of events.events) {
-                    // console.log(JSON.stringify(event, null, 2));
-
-                    for (let l of event.component.jCal[1]) {
-                        let imageUrl = null;
-                        let url = null;
-                        if (l[0] == 'attach') {
-                            imageUrl = l[3];
-                            event.imageUrl = imageUrl;
-                        }
-                        if (l[0] == 'url') {
-                            url = l[3];
-                            event.url = url;
-                        }
-                        // console.log(JSON.stringify(l, null, 2));
-                    }
-                }
-
-                const mappedEvents = events.events.map(e => {
-                    return {
-                        startDate: e.startDate,
-                        endDate: e.startDate,
-                        summary: e.summary,
-                        description: e.description,
-                        imageUrl: e.imageUrl,
-                        url: e.url,
-                    }
-                });
-
-
-
-                const mappedOccurrences = events.occurrences.map(o => ({
-                    startDate: o.startDate,
-                    endDate: o.endDate,
-                    summary: o.item.summary,
-                    url: o.item.url
-                }));
-
-                const allEvents = [].concat(mappedEvents, mappedOccurrences);
-
-                for (let e of allEvents) {
+                for (let e of eventsPerCalendar) {
 
                     // response += 'Processing ' + e.summary + "\n";
 
@@ -115,9 +50,10 @@ async function getCal(allExport: string) {
                     const end = new Date(e.endDate);
                     // const end = `${e.endDate.year}-${e.endDate.month}-${e.endDate.day}T${e.endDate.hour}:${e.endDate.minute}:00`;
 
+
                     let data = {
                         // calendar: calendar,
-                        calendarId: calendar.id,
+                        calendarId: prismaCalendar.id,
                         summary: e.summary ? e.summary : '',
                         description: e.description ? e.description : '',
                         start: start,
@@ -127,50 +63,151 @@ async function getCal(allExport: string) {
                         url: e.url ? e.url : '',
                         // lastUpdated: "2022-01-23T12:01:30.543Z",
                         imageUrl: e.imageUrl ? e.imageUrl : '',
-                        sourceType: 'ics'
+                        sourceType: 'ics',
+                        tags: {
+                            connectOrCreate: e.categories.map((tag: String) => {
+                                return {
+                                    where: { title: tag },
+                                    create: { title: tag },
+                                };
+                            }),
+                        },
 
                     }
                     const event = await prisma.event.create({ data })
-                    response += `\nCreated event ${calendar.title} - ${event.summary}`
-                    totalEvents++;
+                    // response += `\nCreated event ${calendar.title} - ${event.summary}`
+                    // totalEvents++;
 
                 }
 
-                totalCalendars++;
+                // totalCalendars++;
 
             } catch (e) {
-                response += "\nProblem with " + calendar.title + ' ' + e;
+                console.log("\nProblem with " + prismaCalendar.title + ' ' + e);
+            }
+        }
+
+    }
+}
+
+async function expandIcs(ics: string): Array {
+
+    // console.log('ICS::::' + ics);
+
+    const icalExpander = new IcalExpander({ ics: ics, maxIterations: 100 });
+    const events = icalExpander.between(new Date('2023-05-24T00:00:00.000Z'), new Date('2023-12-31T00:00:00.000Z'));
+
+
+
+    //please someone tell me how to do this properly:
+    for (let event of events.events) {
+        for (let l of event.component.jCal[1]) {
+            let imageUrl = null;
+            let url = null;
+            event.categories = [];
+            if (l[0] == 'attach') {
+                imageUrl = l[3];
+                event.imageUrl = imageUrl;
+            }
+            if (l[0] == 'url') {
+                url = l[3];
+                event.url = url;
+            }
+            if (l[0] == 'categories') {
+                let temp = l[3];
+                for (let index = 3; index < l.length; index++) {
+                    const tagString = l[index];
+                    if (tagString) {
+                        event.categories.push(tagString);
+                    }
+                }
+                // event.url = url;
+
             }
         }
 
     }
 
-    return response;
+    const mappedEvents = events.events.map(e => {
+        return {
+            startDate: e.startDate,
+            endDate: e.startDate,
+            summary: e.summary,
+            description: e.description,
+            imageUrl: e.imageUrl,
+            url: e.url,
+            categories: e.categories,
+        }
+    });
+
+    const mappedOccurrences = events.occurrences.map(o => ({
+        startDate: o.startDate,
+        endDate: o.endDate,
+        summary: o.item.summary,
+        url: o.item.url,
+        // categories: o.categories,
+    }));
+
+    const allEvents = [].concat(mappedEvents, mappedOccurrences);
+
+    return allEvents;
+
+}
+
+async function getAll(allExport: string) {
+
+    let allData = await fetch(allExport)
+        .then(response => response.json())
+
+    await prisma.calendar.deleteMany({});
+    await prisma.event.deleteMany({
+        where: {
+            sourceType: 'ics'
+        }
+    });
+
+    await getCalendars(allData.calendars);
+
+    await prisma.list.deleteMany({});
+    for (let list of allData.lists) {
+
+        let calendarIcsUrls = list.calendars.map(l => l.ics);
+
+        let calendars = await prisma.calendar.findMany({
+            where: {
+                url: { in: calendarIcsUrls }
+                // url: 'https://calendar.google.com/calendar/ical/1nkslmh4uur4t51n3rildsd9s0@group.calendar.google.com/public/basic.ics'
+            }
+        })
+
+        let calendarIds = calendars.map(c => {
+            return {
+                id: c.id
+            }
+        });
+        // console.log(calendarIds);
+
+
+        const prismaList = await prisma.list.create({
+            data: {
+                title: list.title,
+                name: list.name,
+                calendars: {
+                    connect: calendarIds
+                }
+            }
+        })
+    }
+
 
 }
 
 
 export async function GET(request) {
-
-    let response = '';
-
     try {
-
-        await prisma.calendar.deleteMany({});
-        await prisma.event.deleteMany({
-            where: {
-                sourceType: 'ics'
-            }
-        });
-
-        // response += await getCal(['Amsterdam', 'Art'], 'https://publicdata.events/list/amsterdamart/');
-        response += await getCal('http://publicdata.jgdev.xyz/export/');
-        // response += await getCal(['Publishing', 'Academia'], 'https://publicdata.events/list/publishing-academia/');
-
-        return new Response(response);
-
+        await getAll('http://publicdata.jgdev.xyz/export/');
+        return new Response('OK');
     } catch (e) {
-        return new Response('not ok' + e);
+        return new Response('Not OK' + e);
     }
-
 }
