@@ -10,12 +10,12 @@ export default function EventLead(props) {
 
         <Link href={`/event/${event.id}`} className={'block border-t-2 py-1 border-white min-h-[12rem]'}>
             <div className=" mb-2">
-                {event.calendar &&
+                {event.venue &&
                     <div className="flex h-12 my-2 items-center gap-3">
                         <div className="w-[2rem] flex items-center justify-center">
-                            <img className="" src={`https://www.google.com/s2/favicons?domain=${event.calendar.website}&sz=256`} alt="" />
+                            <img className="" src={`https://www.google.com/s2/favicons?domain=${event.venue.website}&sz=256`} alt="" />
                         </div>
-                        <div className="">{event.calendar.title}</div>
+                        <div className="">{event.venue.title}</div>
                     </div>
                 }
                 <div>

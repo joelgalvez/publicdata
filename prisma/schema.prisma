@@ -14,7 +14,7 @@ model Tag {
     id        Int        @id @default(autoincrement())
     title     String     @unique
     events    Event[]
-    calendars Calendar[]
+    venues    Venue[]
     tagGroups TagGroup[]
 }
 
@@ -24,18 +24,19 @@ model TagGroup {
     tags  Tag[]
 }
 
-model Calendar {
-    id      Int     @id @default(autoincrement())
-    title   String
-    url     String  @unique
-    website String
-    events  Event[]
-    tags    Tag[]
-    lists   List[]
+model Venue {
+    id         Int     @id @default(autoincrement())
+    title      String  @unique
+    url        String?
+    website    String?
+    events     Event[]
+    tags       Tag[]
+    lists      List[]
+    sourceType String
 }
 
 model Event {
-    id          Int       @id @default(autoincrement())
+    id          Int      @id @default(autoincrement())
     summary     String
     description String
     start       DateTime
@@ -43,14 +44,14 @@ model Event {
     url         String
     imageUrl    String
     tags        Tag[]
-    calendarId  Int?
-    calendar    Calendar? @relation(fields: [calendarId], references: [id])
+    venueId     Int
+    venue       Venue    @relation(fields: [venueId], references: [id])
     sourceType  String
 }
 
 model List {
-    id        Int        @id @default(autoincrement())
-    title     String
-    name      String     @unique
-    calendars Calendar[]
+    id     Int     @id @default(autoincrement())
+    title  String
+    name   String  @unique
+    venues Venue[]
 }

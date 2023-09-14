@@ -18,24 +18,36 @@ export async function GET(request) {
 
 
 
-
     let all = await fetch('https://newmusicnow.nl/api/ddw?v2')
         .then(response => response.json())
-
-    let total = 0;
-
-
 
 
     for (const [venue, venueArr] of Object.entries(all)) {
 
-
         for (let venueInner of venueArr) {
+
+            const venueRecord = prisma.venue.upsert({
+                where: {
+                    title: venue
+                },
+                update: {
+                    title: venue
+                },
+                create: {
+                    title: venue,
+                    sourceType: 'nmn',
+                    // url: 'https://newmusicnow.nl',
+                    website: 'https://newmusicnow.nl'
+                }
+            });
+
+            const venueId = (await venueRecord).id;
+
+            // console.log();
 
             for (let event of venueInner.event) {
 
                 try {
-                    // console.log(event);
 
                     if (!event) {
                         continue;
@@ -55,21 +67,23 @@ export async function GET(request) {
                     }
 
                     // console.log('Tag-addr: ' + venueInner.address.addressLocality);
-                    // console.log();
 
-
+                    let allTags = [];
+                    allTags = allTags.concat(venueInner.address.addressLocality);
+                    allTags = allTags.concat(event.keywords);
 
                     const r = await prisma.event.create({
                         data: {
                             summary: event.name,
                             description: event.description,
+                            venueId: venueId,
                             url: event.url,
                             start: start,
                             end: end,
                             imageUrl: '',
                             sourceType: 'nmn',
                             tags: {
-                                connectOrCreate: event.keywords.map((tag: String) => {
+                                connectOrCreate: allTags.map((tag: String) => {
                                     return {
                                         where: { title: tag },
                                         create: { title: tag },

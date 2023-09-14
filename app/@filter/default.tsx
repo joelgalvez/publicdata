@@ -6,10 +6,11 @@ export default async function Page({ params }) {
 
     const lists = await getLists();
     const tags = await getTags();
-    const calendars = await getCalendars();
+    const venueTags = await getVenueTags();
+    const venues = await getVenues();
 
     return (
-        <div className="m-4 container mx-auto">
+        <div className="m-4 container mx-auto grid lg:grid-cols-4">
 
             <div className="mb-8">
                 <div className='text-2xl'>Lists</div>
@@ -24,12 +25,13 @@ export default async function Page({ params }) {
             </div>
 
             <div className="mb-8">
-                <div className='text-2xl'>Tags</div>
-                {tags.map(tag => {
+                <div className='text-2xl'>Venue tags</div>
+                {venueTags.map(tag => {
                     return (
                         <div>
-                            {tag.events.length > 1 &&
-                                <div>{tag.title} ({tag.events.length + tag.calendars.length})</div>
+                            {tag.venues.length > 1 &&
+
+                                <div>{tag.title} ({tag.venues.length})</div>
                             }
                         </div>
                     )
@@ -37,10 +39,23 @@ export default async function Page({ params }) {
             </div>
 
             <div className="mb-8">
-                <div className='text-2xl'>Individual Calendars</div>
-                {calendars.map(calendar => {
+                <div className='text-2xl'>Event tags</div>
+                {tags.map(tag => {
                     return (
-                        <div>{calendar.title}</div>
+                        <div>
+                            {tag.events.length > 1 &&
+                                <div>{tag.title} ({tag.events.length})</div>
+                            }
+                        </div>
+                    )
+                })}
+            </div>
+
+            <div className="mb-8">
+                <div className='text-2xl'>Individual Venues</div>
+                {venues.map(venue => {
+                    return (
+                        <div class={venue.events.length == 0 ? 'opacity-40' : ''}>{venue.title} ({venue.events.length})</div>
                     )
                 })}
             </div>
@@ -57,15 +72,30 @@ async function getTags() {
     return await prisma.tag.findMany({
         include: {
             events: true,
-            calendars: true
+            venues: true
+        },
+        orderBy: {
+            title: 'asc'
         }
     });
 }
 
-async function getCalendars() {
-    return await prisma.calendar.findMany({
+async function getVenueTags() {
+    return await prisma.tag.findMany({
         include: {
-            tags: true
+            venues: true
+        }
+    });
+}
+
+async function getVenues() {
+    return await prisma.venue.findMany({
+        include: {
+            tags: true,
+            events: true
+        },
+        orderBy: {
+            title: 'asc'
         }
     });
 }
