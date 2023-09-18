@@ -1,5 +1,6 @@
 import EventDate from '../components/EventDate'
 import prisma from '../../lib/prisma'
+import Link from 'next/link';
 
 
 export default async function Page({ params }) {
@@ -17,34 +18,24 @@ export default async function Page({ params }) {
                 {lists.map(list => {
                     return (
                         <div>
-                            <input type="checkbox" id="vehicle1" name={list.name} value={1} />
-                            <label for="vehicle1">{list.title}</label>
+                            <input type="checkbox" id="aa" name={list.name} value={1} />
+                            <label htmlFor="aa">{list.title}</label>
                         </div>
                     )
                 })}
             </div>
 
             <div className="mb-8">
-                <div className='text-2xl'>Venue tags</div>
-                {venueTags.map(tag => {
-                    return (
-                        <div>
-                            {tag.venues.length > 1 &&
-
-                                <div>{tag.title} ({tag.venues.length})</div>
-                            }
-                        </div>
-                    )
-                })}
-            </div>
-
-            <div className="mb-8">
-                <div className='text-2xl'>Event tags</div>
+                <div className='text-2xl'>Tags</div>
                 {tags.map(tag => {
                     return (
                         <div>
                             {tag.events.length > 1 &&
-                                <div>{tag.title} ({tag.events.length})</div>
+                                <div>
+                                    <Link href={'/search/' + tag.title}>
+                                        {tag.title} ({tag.events.length})
+                                    </Link>
+                                </div>
                             }
                         </div>
                     )
@@ -55,7 +46,7 @@ export default async function Page({ params }) {
                 <div className='text-2xl'>Individual Venues</div>
                 {venues.map(venue => {
                     return (
-                        <div class={venue.events.length == 0 ? 'opacity-40' : ''}>{venue.title} ({venue.events.length})</div>
+                        <div className={venue.events.length == 0 ? 'opacity-40' : ''}>{venue.title} ({venue.events.length})</div>
                     )
                 })}
             </div>
@@ -75,7 +66,9 @@ async function getTags() {
             venues: true
         },
         orderBy: {
-            title: 'asc'
+            events: {
+                _count: 'desc'
+            }
         }
     });
 }
@@ -95,7 +88,9 @@ async function getVenues() {
             events: true
         },
         orderBy: {
-            title: 'asc'
+            tags: {
+                _count: 'asc'
+            }
         }
     });
 }

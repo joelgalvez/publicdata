@@ -19,9 +19,9 @@ export default function RootLayout({
     <html lang="en">
       <body className={inter.className}>
         <div className="filter">{filter}</div>
-        <main className="fixed top-[50vh] h-screen w-full overflow-y-scroll bg-black">
+        {/* <main className="fixed top-[50vh] h-screen w-full overflow-y-scroll bg-black">
           {result}
-        </main>
+        </main> */}
         {children}
       </body>
     </html>
