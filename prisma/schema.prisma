@@ -18,10 +18,20 @@ model Tag {
     tagGroups TagGroup[]
 }
 
+model City {
+    id        Int        @id @default(autoincrement())
+    title     String     @unique
+    events    Event[]
+    venues    Venue[]
+    tagGroups TagGroup[]
+}
+
 model TagGroup {
-    id    Int    @id @default(autoincrement())
-    title String @unique
-    tags  Tag[]
+    id     Int    @id @default(autoincrement())
+    title  String @unique
+    tags   Tag[]
+    City   City?  @relation(fields: [cityId], references: [id])
+    cityId Int?
 }
 
 model Venue {
@@ -31,6 +41,7 @@ model Venue {
     website    String?
     events     Event[]
     tags       Tag[]
+    cities     City[]
     lists      List[]
     sourceType String
 }
@@ -47,6 +58,7 @@ model Event {
     venueId     Int
     venue       Venue    @relation(fields: [venueId], references: [id])
     sourceType  String
+    cities      City[]
 }
 
 model List {

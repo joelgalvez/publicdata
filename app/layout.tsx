@@ -9,20 +9,20 @@ export const metadata = {
 }
 
 export default function RootLayout({
-  children,
-  filter,
-  result
+  children
 }: {
   children: React.ReactNode
 }) {
   return (
     <html lang="en">
       <body className={inter.className}>
-        <div className="filter">{filter}</div>
+
         {/* <main className="fixed top-[50vh] h-screen w-full overflow-y-scroll bg-black">
-          {result}
-        </main> */}
-        {children}
+            {result}
+          </main> */}
+        <div>{children}</div>
+
+
       </body>
     </html>
   )

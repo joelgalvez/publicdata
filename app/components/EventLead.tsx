@@ -7,7 +7,6 @@ export default function EventLead(props) {
     let event = props.event;
 
     return (
-
         <Link href={`/event/${event.id}`} className={'block border-t-2 py-1 border-white min-h-[12rem]'}>
             <div className=" mb-2">
                 {event.venue &&

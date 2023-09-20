@@ -69,8 +69,9 @@ export async function GET(request) {
                     // console.log('Tag-addr: ' + venueInner.address.addressLocality);
 
                     let allTags = [];
-                    allTags = allTags.concat(venueInner.address.addressLocality);
                     allTags = allTags.concat(event.keywords);
+
+                    let allCities = [venueInner.address.addressLocality];
 
                     const r = await prisma.event.create({
                         data: {
@@ -83,10 +84,18 @@ export async function GET(request) {
                             imageUrl: '',
                             sourceType: 'nmn',
                             tags: {
-                                connectOrCreate: allTags.map((tag: String) => {
+                                connectOrCreate: event.keywords.map((tag: String) => {
                                     return {
                                         where: { title: tag },
                                         create: { title: tag },
+                                    };
+                                }),
+                            },
+                            cities: {
+                                connectOrCreate: allCities.map((city: String) => {
+                                    return {
+                                        where: { title: city },
+                                        create: { title: city },
                                     };
                                 }),
                             },

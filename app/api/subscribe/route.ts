@@ -24,7 +24,7 @@ export async function GET(request: Request, context: { params }) {
         let d = '';
         events.forEach(event => {
             let time = moment(event.start).format('HH:mm');
-            d += `${time} ${event.calendar.title}, ${event.summary}) \n\n`;
+            d += `${time} ${event.venue.title}, ${event.summary}) \n\n`;
         })
 
         let ee = {
@@ -76,7 +76,7 @@ async function getEvents(start: Date, end: Date) {
             }
         },
         include: {
-            calendar: true
+            venue: true
         },
         orderBy: {
             start: 'asc'

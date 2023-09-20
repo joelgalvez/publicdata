@@ -4,6 +4,7 @@ import ICAL from 'ical.js';
 import { promises as fs } from 'fs';
 import path from 'path';
 import IcalExpander from 'ical-expander';
+import { log } from 'console';
 
 
 // import ICAL from 'ical.js';
@@ -32,6 +33,14 @@ async function getCalendars(allCalendars) {
                                 create: { title: tag },
                             };
                         }),
+                    },
+                    cities: {
+                        connectOrCreate: cal.cities.map((city: String) => {
+                            return {
+                                where: { title: city },
+                                create: { title: city },
+                            };
+                        }),
                     }
                 }
             })
@@ -41,11 +50,14 @@ async function getCalendars(allCalendars) {
                     id: prismaVenue.id
                 },
                 include: {
-                    tags: true
+                    tags: true,
+                    cities: true
                 }
             })
 
             let venueTags = venue?.tags.map(tag => tag.title);
+
+            let venueCities = venue?.cities.map(city => city.title);
 
             let fileContents = '';
             await fetch(cal.ics)
@@ -79,7 +91,7 @@ async function getCalendars(allCalendars) {
                 allTags = allTags.concat(venueTags);
 
 
-
+                console.log('venue cities', venueCities);
 
 
                 let data = {
@@ -100,6 +112,14 @@ async function getCalendars(allCalendars) {
                             return {
                                 where: { title: tag },
                                 create: { title: tag },
+                            };
+                        }),
+                    },
+                    cities: {
+                        connectOrCreate: venueCities.map((city: String) => {
+                            return {
+                                where: { title: city },
+                                create: { title: city },
                             };
                         }),
                     },
@@ -248,7 +268,7 @@ async function getAll(allExport: string) {
 
 export async function GET(request) {
     // try {
-    await getAll('http://publicdata.jgdev.xyz/export/');
+    await getAll('http://publicdata.jgdev.xyz/export/?v=2');
     return new Response('OK');
     // } catch (e) {
     //     return new Response('Not OK: ' + e);
