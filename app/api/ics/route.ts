@@ -68,8 +68,8 @@ async function getCalendars(allCalendars) {
 
             }
 
-            // await fetch(cal.ics, { cache: 'no-store' })
-            await fetch(cal.ics)
+            await fetch(cal.ics, { cache: 'no-store' })
+                // await fetch(cal.ics)
                 .then(response => response.text())
                 .then(text => {
                     fileContents = text;

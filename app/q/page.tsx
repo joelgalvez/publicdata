@@ -139,17 +139,18 @@ async function getEvents(searchParams, start: Date, end: Date) {
 
     return await prisma.event.findMany({
         where: {
-            AND: [
+
+            OR: [
                 {
-                    start: {
-                        gt: start
-                    },
-                    end: {
-                        lt: end
-                    },
-                },
-                {
-                    OR: [
+                    AND: [
+                        {
+                            start: {
+                                gt: start
+                            },
+                            end: {
+                                lt: end
+                            },
+                        },
                         {
                             tags: {
                                 some: {
@@ -169,27 +170,26 @@ async function getEvents(searchParams, start: Date, end: Date) {
                                     }
                                 }
                             },
-                        },
-                        {
-                            venue: {
-                                title: {
-                                    in: venues
-                                }
-                            }
-                        },
-                        {
-                            venue: {
-                                lists: {
-                                    some: {
-                                        id: {
-                                            in: listIds
-                                        }
-                                    }
+                        }
+                    ],
+                },
+                {
+                    venue: {
+                        title: {
+                            in: venues
+                        }
+                    }
+                },
+                {
+                    venue: {
+                        lists: {
+                            some: {
+                                id: {
+                                    in: listIds
                                 }
                             }
                         }
-
-                    ]
+                    }
                 }
             ]
         },
