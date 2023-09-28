@@ -12,7 +12,9 @@ export default function Filter(props) {
 
     let lists = props.data.lists;
     let cities = props.data.cities;
-    let tags = props.data.tags;
+    let unpinnedTags = props.data.unpinnedTags;
+    let pinnedTags = props.data.pinnedTags;
+
     let venues = props.data.venues;
 
     // const [on, setOn] = useState('on');
@@ -106,8 +108,30 @@ export default function Filter(props) {
                     <div className="min-h-[10rem]">
                         <div className='text-2xl mb-2'>Tags</div>
                     </div>
+                    <div className="mb-[1em]">
+                        {pinnedTags.map(tag => {
+                            return (
+                                <div className="" key={tag.id}>
+                                    {tag._count.events > 1 &&
+                                        <div className="grid grid-cols-[auto,1fr,1fr] gap-x-2">
+                                            <div className="" >
+                                                <input type="checkbox" name={'tag-' + tag.title} value="1" onChange={changed} />
+                                            </div>
+                                            <div className="">
+                                                📌 {tag.title}
+                                            </div>
+                                            <div className="">
+                                                {tag._count.events}
+                                            </div>
+
+                                        </div>
+                                    }
+                                </div>
+                            )
+                        })}
+                    </div>
                     <div className="">
-                        {tags.map(tag => {
+                        {unpinnedTags.map(tag => {
                             return (
                                 <div className="" key={tag.id}>
                                     {tag._count.events > 1 &&

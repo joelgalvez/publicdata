@@ -68,7 +68,8 @@ async function getCalendars(allCalendars) {
 
             }
 
-            await fetch(cal.ics, { cache: 'no-store' })
+            // await fetch(cal.ics, { cache: 'no-store' })
+            await fetch(cal.ics)
                 .then(response => response.text())
                 .then(text => {
                     fileContents = text;
@@ -278,11 +279,20 @@ async function getAll(allExport: string) {
             }
         })
     }
+
+    await prisma.tag.update({ data: { pinned: true }, where: { title: 'Art' } })
+    await prisma.tag.update({ data: { pinned: true }, where: { title: 'New Music Now' } })
+    await prisma.tag.update({ data: { pinned: true }, where: { title: 'Internet related' } })
+    await prisma.tag.update({ data: { pinned: true }, where: { title: 'Academia' } })
+
 }
 
 
 export async function GET(request) {
     // try {
+
+
+
     await getAll('http://publicdata.jgdev.xyz/export/?v=6');
     return new Response('OK');
     // } catch (e) {

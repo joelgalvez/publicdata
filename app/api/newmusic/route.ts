@@ -9,18 +9,14 @@ import prisma from '../../../lib/prisma'
 
 export async function GET(request) {
 
-    // try {
-
     await prisma.event.deleteMany({
         where: {
             sourceType: 'nmn'
         }
     });
 
-
     let all = await fetch('https://newmusicnow.nl/api/ddw?v3')
         .then(response => response.json())
-
 
     for (const [venue, venueArr] of Object.entries(all)) {
 
