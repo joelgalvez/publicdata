@@ -1,3 +1,4 @@
+import { log } from 'console';
 import prisma from '../../../lib/prisma'
 
 // import ICAL from 'ical.js';
@@ -17,8 +18,7 @@ export async function GET(request) {
     });
 
 
-
-    let all = await fetch('https://newmusicnow.nl/api/ddw?v2')
+    let all = await fetch('https://newmusicnow.nl/api/ddw?v3')
         .then(response => response.json())
 
 
@@ -71,6 +71,12 @@ export async function GET(request) {
                     let allTags = [];
                     allTags = allTags.concat(event.keywords);
 
+                    allTags.push('New Music Now');
+
+
+
+
+
                     let allCities = [venueInner.address.addressLocality];
 
                     const r = await prisma.event.create({
@@ -84,7 +90,7 @@ export async function GET(request) {
                             imageUrl: '',
                             sourceType: 'nmn',
                             tags: {
-                                connectOrCreate: event.keywords.map((tag: String) => {
+                                connectOrCreate: allTags.map((tag: String) => {
                                     return {
                                         where: { title: tag },
                                         create: { title: tag },
@@ -101,6 +107,8 @@ export async function GET(request) {
                             },
                         }
                     })
+                    console.log(r);
+
                 } catch (e) {
                     return new Response('problem with event' + venueInner.name + ', ' + event.name + ': ' + e);
                 }

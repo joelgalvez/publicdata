@@ -5,6 +5,7 @@ import { promises as fs } from 'fs';
 import path from 'path';
 import IcalExpander from 'ical-expander';
 import { log } from 'console';
+import moment from 'moment';
 
 
 // import ICAL from 'ical.js';
@@ -15,8 +16,6 @@ import { log } from 'console';
 async function getCalendars(allCalendars) {
     for (let cal of allCalendars) {
         if (cal.ics) {
-
-            console.log('cal ' + cal.title);
 
             let prismaVenue = null;
             // try {
@@ -60,6 +59,15 @@ async function getCalendars(allCalendars) {
             let venueCities = venue?.cities.map(city => city.title);
 
             let fileContents = '';
+            console.log(cal.ics);
+
+            if (cal.ics.includes('calendar.google')) {
+                let r = Math.round(Math.random() * 10000000000);
+                cal.ics += '?' + r;
+                console.log(cal.ics);
+
+            }
+
             await fetch(cal.ics)
                 .then(response => response.text())
                 .then(text => {
@@ -86,12 +94,23 @@ async function getCalendars(allCalendars) {
                 const end = new Date(e.endDate);
                 // const end = `${e.endDate.year}-${e.endDate.month}-${e.endDate.day}T${e.endDate.hour}:${e.endDate.minute}:00`;
 
+
+
+
+                if (end < moment().toDate()) {
+
+                    console.log(end);
+                };
+
                 let allTags = [];
                 allTags = allTags.concat(e.categories);
                 allTags = allTags.concat(venueTags);
 
-
-                console.log('venue cities', venueCities);
+                allTags = allTags.filter(e => {
+                    if (e) {
+                        return e;
+                    }
+                });
 
 
                 let data = {
@@ -154,7 +173,7 @@ async function expandIcs(ics: string): Array {
         throw new Error('Failed to expand ics');
     }
 
-    const events = icalExpander.between(new Date('2023-05-24T00:00:00.000Z'), new Date('2023-12-31T00:00:00.000Z'));
+    const events = icalExpander.between(new Date('2023-05-24T00:00:00.000Z'), new Date('2024-12-31T00:00:00.000Z'));
 
 
     for (let event of events.events) {
@@ -231,7 +250,6 @@ async function getAll(allExport: string) {
 
     await prisma.list.deleteMany({});
 
-    console.log(allData.lists);
 
     for (let list of allData.lists) {
 
@@ -268,7 +286,7 @@ async function getAll(allExport: string) {
 
 export async function GET(request) {
     // try {
-    await getAll('http://publicdata.jgdev.xyz/export/?v=2');
+    await getAll('http://publicdata.jgdev.xyz/export/?v=5');
     return new Response('OK');
     // } catch (e) {
     //     return new Response('Not OK: ' + e);

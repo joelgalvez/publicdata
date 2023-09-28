@@ -25,7 +25,11 @@ export default async function Page({ params }) {
 }
 
 async function getLists() {
-    return await prisma.list.findMany({});
+    return await prisma.list.findMany({
+        include: {
+            venues: true
+        }
+    });
 }
 
 async function getTags() {
@@ -75,12 +79,11 @@ async function getVenues() {
                     tags: true,
                     events: true
                 }
-            }
+            },
+            cities: true
         },
         orderBy: {
-            tags: {
-                _count: 'asc'
-            }
+            title: 'asc'
         }
     });
 }
