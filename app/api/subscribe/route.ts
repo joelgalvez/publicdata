@@ -78,6 +78,15 @@ async function getEvents(start: Date, end: Date) {
             },
             end: {
                 lt: end
+            },
+            venue: {
+                lists: {
+                    some: {
+                        id: {
+                            in: [11]
+                        }
+                    }
+                }
             }
         },
         include: {

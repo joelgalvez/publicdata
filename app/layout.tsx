@@ -20,7 +20,7 @@ export default function RootLayout({
         {/* <main className="fixed top-[50vh] h-screen w-full overflow-y-scroll bg-black">
             {result}
           </main> */}
-        <div>{children}</div>
+        <div className='p-4'>{children}</div>
 
 
       </body>

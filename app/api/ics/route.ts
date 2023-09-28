@@ -29,7 +29,10 @@ async function getCalendars(allCalendars) {
                         connectOrCreate: cal.tags.map((tag: String) => {
                             return {
                                 where: { title: tag },
-                                create: { title: tag },
+                                create: {
+                                    title: tag,
+                                    pinned: false
+                                },
                             };
                         }),
                     },
@@ -59,16 +62,13 @@ async function getCalendars(allCalendars) {
             let venueCities = venue?.cities.map(city => city.title);
 
             let fileContents = '';
-            console.log(cal.ics);
-
             if (cal.ics.includes('calendar.google')) {
                 let r = Math.round(Math.random() * 10000000000);
                 cal.ics += '?' + r;
-                console.log(cal.ics);
 
             }
 
-            await fetch(cal.ics)
+            await fetch(cal.ics, { cache: 'no-store' })
                 .then(response => response.text())
                 .then(text => {
                     fileContents = text;
@@ -98,8 +98,8 @@ async function getCalendars(allCalendars) {
 
 
                 if (end < moment().toDate()) {
-
                     console.log(end);
+                    continue;
                 };
 
                 let allTags = [];
@@ -130,7 +130,10 @@ async function getCalendars(allCalendars) {
                         connectOrCreate: allTags.map((tag: String) => {
                             return {
                                 where: { title: tag },
-                                create: { title: tag },
+                                create: {
+                                    title: tag,
+                                    pinned: false
+                                },
                             };
                         }),
                     },
@@ -160,11 +163,6 @@ async function getCalendars(allCalendars) {
 }
 
 async function expandIcs(ics: string): Array {
-
-    // console.log('ICS::::' + ics);
-
-    // console.log(ics);
-
 
     let icalExpander = null;
     try {
@@ -269,7 +267,6 @@ async function getAll(allExport: string) {
                 id: c.id
             }
         });
-        // console.log(calendarIds);
 
         const prismaList = await prisma.list.create({
             data: {
@@ -286,7 +283,7 @@ async function getAll(allExport: string) {
 
 export async function GET(request) {
     // try {
-    await getAll('http://publicdata.jgdev.xyz/export/?v=5');
+    await getAll('http://publicdata.jgdev.xyz/export/?v=6');
     return new Response('OK');
     // } catch (e) {
     //     return new Response('Not OK: ' + e);

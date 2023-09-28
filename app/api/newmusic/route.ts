@@ -93,7 +93,10 @@ export async function GET(request) {
                                 connectOrCreate: allTags.map((tag: String) => {
                                     return {
                                         where: { title: tag },
-                                        create: { title: tag },
+                                        create: {
+                                            title: tag,
+                                            pinned: false
+                                        },
                                     };
                                 }),
                             },
@@ -107,7 +110,6 @@ export async function GET(request) {
                             },
                         }
                     })
-                    console.log(r);
 
                 } catch (e) {
                     return new Response('problem with event' + venueInner.name + ', ' + event.name + ': ' + e);

@@ -13,6 +13,7 @@ datasource db {
 model Tag {
     id        Int        @id @default(autoincrement())
     title     String     @unique
+    pinned    Boolean
     events    Event[]
     venues    Venue[]
     tagGroups TagGroup[]
