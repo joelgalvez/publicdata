@@ -9,7 +9,8 @@ export const metadata = {
 }
 
 export default function RootLayout({
-  children
+  children,
+  filter
 }: {
   children: React.ReactNode
 }) {
@@ -17,10 +18,14 @@ export default function RootLayout({
     <html lang="en">
       <body className={inter.className}>
 
+        <div className="grid grid-cols-[18rem,1fr]">
+
+          <div className=''>{filter}</div>
+          <div className=''>{children}</div>
+        </div>
         {/* <main className="fixed top-[50vh] h-screen w-full overflow-y-scroll bg-black">
             {result}
           </main> */}
-        <div className='p-4'>{children}</div>
 
 
       </body>

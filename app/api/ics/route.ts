@@ -68,8 +68,8 @@ async function getCalendars(allCalendars) {
 
             }
 
-            await fetch(cal.ics, { cache: 'no-store' })
-                // await fetch(cal.ics)
+            // await fetch(cal.ics, { cache: 'no-store' })
+            await fetch(cal.ics)
                 .then(response => response.text())
                 .then(text => {
                     fileContents = text;
@@ -293,7 +293,7 @@ export async function GET(request) {
 
 
 
-    await getAll('http://publicdata.jgdev.xyz/export/?v=6');
+    await getAll('http://publicdata.jgdev.xyz/export/?v=7');
     return new Response('OK');
     // } catch (e) {
     //     return new Response('Not OK: ' + e);

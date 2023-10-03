@@ -10,7 +10,7 @@ export default function Filter(props) {
     const handleOpen = (e) => {
         let p = e.target.closest('.parent');
         let d = p.querySelector('dialog');
-        d.show();
+        d.showModal();
     }
 
     return (

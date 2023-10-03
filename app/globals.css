@@ -26,3 +26,21 @@ body {
 .text p+p {
   @apply mt-4;
 }
+
+details > summary::before {
+  content: '+';
+  display:inline-block;
+  width: 1em;
+
+}
+details[open] > summary::before {
+  content: '–';
+  display:inline-block;
+  width: 1em;
+}
+details > summary {
+ cursor: pointer;
+ list-style: none;
+ @apply m-1;
+
+}
