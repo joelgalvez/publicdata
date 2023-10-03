@@ -1,11 +1,25 @@
-import EventDate from '../../components/EventDate'
-import prisma from '../../../lib/prisma'
+"use client"
 
-export default async function Page({ params }) {
-    const event = await getEvent(parseInt(params.id, 10));
+import EventDate from './EventDate'
+import { useRouter, usePathname } from 'next/navigation';
+
+export default function EventView(props) {
+
+    const router = useRouter()
+
+    let event = props.event;
+
+    function onBack() {
+        router.back();
+    }
+
     return (
-        <div className="fixed bg-black/80 w-full h-screen right-0 top-0 ">
-            <div className="bg-black absolute p-4  top-0 right-0 w-[90%] h-screen overflow-y-auto">
+        <div className="" onClick={onBack}>
+
+            <div className="fixed bg-black/70 w-full h-screen right-0 top-0 ">
+            </div >
+
+            <div className="bg-black absolute p-4  top-0 right-0 max-w-[50rem] h-screen overflow-y-auto">
                 {event && event.venue &&
                     < div >
                         <header className="">
@@ -50,22 +64,7 @@ export default async function Page({ params }) {
 
             </div>
 
-        </div >
-    );
-}
 
-async function getEvent(id: Number) {
-    return await prisma.event.findFirst({
-        include: {
-            tags: true,
-            venue: {
-                include: {
-                    tags: true
-                }
-            }
-        },
-        where: {
-            id: id
-        }
-    });
+        </div>
+    )
 }

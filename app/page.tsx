@@ -1,3 +1,3 @@
 export default function Page() {
-  return <div></div>
+  return <div>Select a city and a tag!</div>
 }

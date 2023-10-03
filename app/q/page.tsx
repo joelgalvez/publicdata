@@ -1,9 +1,11 @@
+import Link from 'next/link'
 import prisma from '../../lib/prisma'
 import moment from 'moment';
 import navigation from 'next/navigation';
 import EventLead from '../components/EventLead';
 
 import Day from '../components/Day';
+import { log } from 'console';
 
 
 export default async function Page({ params, searchParams }) {
@@ -39,6 +41,8 @@ export default async function Page({ params, searchParams }) {
     let start = moment().toDate();
     let end = moment().add(2, 'years').toDate();
     const all = await getEvents(searchParams, start, end)
+
+
 
     // let month = await getEvents(monthStart, monthEnd);
 
@@ -82,6 +86,11 @@ export default async function Page({ params, searchParams }) {
 
             </div >
 
+            <div className="fixed top-0 right-0">
+                <Link href="/subscribe">
+                    <div className="m-6 px-4 py-2 bg-red-500 text-xl">Subscribe</div>
+                </Link>
+            </div>
 
         </>
     )
@@ -93,6 +102,7 @@ async function getEvents(searchParams, start: Date, end: Date) {
     let lists = [];
     let cities = [];
     let venues = [];
+
 
     if (searchParams) {
         for (const [key, value] of Object.entries(searchParams)) {
@@ -137,7 +147,7 @@ async function getEvents(searchParams, start: Date, end: Date) {
 
 
 
-    return await prisma.event.findMany({
+    const ret = await prisma.event.findMany({
         where: {
 
             OR: [
@@ -206,5 +216,7 @@ async function getEvents(searchParams, start: Date, end: Date) {
             start: 'asc'
         }
     });
+
+    return ret;
 }
 

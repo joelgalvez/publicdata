@@ -34,7 +34,7 @@
     "**/*.ts",
     "**/*.tsx",
     ".next/types/**/*.ts",
-    "app/event/[id]/page.js"
+    "app/q/@event/[id]/page.js"
   ],
   "exclude": [
     "node_modules"

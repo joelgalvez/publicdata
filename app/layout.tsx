@@ -10,7 +10,9 @@ export const metadata = {
 
 export default function RootLayout({
   children,
-  filter
+  filter,
+  event,
+  subscribe
 }: {
   children: React.ReactNode
 }) {
@@ -22,6 +24,8 @@ export default function RootLayout({
 
           <div className=''>{filter}</div>
           <div className=''>{children}</div>
+          <div className=''>{event}</div>
+          <div className='subscribe '>{subscribe}</div>
         </div>
         {/* <main className="fixed top-[50vh] h-screen w-full overflow-y-scroll bg-black">
             {result}
