@@ -1,3 +1,5 @@
+export const dynamic = "force-dynamic";
+
 import prisma from '../../../lib/prisma'
 
 import ICAL from 'ical.js';
@@ -68,8 +70,8 @@ async function getCalendars(allCalendars) {
 
             }
 
-            // await fetch(cal.ics, { cache: 'no-store' })
-            await fetch(cal.ics)
+            await fetch(cal.ics, { cache: 'no-store' })
+                // await fetch(cal.ics)
                 .then(response => response.text())
                 .then(text => {
                     fileContents = text;
@@ -99,7 +101,6 @@ async function getCalendars(allCalendars) {
 
 
                 if (end < moment().toDate()) {
-                    console.log(end);
                     continue;
                 };
 

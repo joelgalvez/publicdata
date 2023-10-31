@@ -19,7 +19,7 @@ export default function EventView(props) {
             <div className="fixed bg-black/70 w-full h-screen right-0 top-0 ">
             </div >
 
-            <div className="bg-black absolute p-4  top-0 right-0 max-w-[50rem] h-screen overflow-y-auto">
+            <div className="bg-black absolute p-4  top-0 right-0 h-screen w-[90%] lg:w-[50rem] overflow-y-auto" >
                 {event && event.venue &&
                     < div >
                         <header className="">
@@ -44,7 +44,7 @@ export default function EventView(props) {
                             <div className="mb-4 flex gap-4 ">
                                 {event.tags.map(tag => {
                                     return (
-                                        <div className="">{tag.title}</div>
+                                        <div className="" key={tag.id}>{tag.title}</div>
                                     )
                                 })}
                             </div>

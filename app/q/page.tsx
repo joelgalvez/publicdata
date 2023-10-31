@@ -1,3 +1,5 @@
+export const dynamic = "force-dynamic";
+
 import Link from 'next/link'
 import prisma from '../../lib/prisma'
 import moment from 'moment';
@@ -43,7 +45,6 @@ export default async function Page({ params, searchParams }) {
     const all = await getEvents(searchParams, start, end)
 
 
-
     // let month = await getEvents(monthStart, monthEnd);
 
 
@@ -55,7 +56,7 @@ export default async function Page({ params, searchParams }) {
                     <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 m-4">
                         {all.map(event => {
                             return (
-                                <EventLead event={event} />
+                                <EventLead event={event} key={event.id} />
                             )
                         })}
                     </div>
@@ -104,6 +105,10 @@ async function getEvents(searchParams, start: Date, end: Date) {
     let venues = [];
 
 
+
+    console.time('rubbish');
+
+
     if (searchParams) {
         for (const [key, value] of Object.entries(searchParams)) {
             if (key.substring(0, 3) == 'tag') {
@@ -144,23 +149,30 @@ async function getEvents(searchParams, start: Date, end: Date) {
 
     let listIds = listRecords.map(lr => lr.id);
 
+    console.log('-----------------');
+    console.log('-----------------');
+    console.log('-----------------');
 
-
+    console.timeEnd('rubbish');
+    console.time('mainQuery');
 
     const ret = await prisma.event.findMany({
+        skip: 0,
+        take: 20,
         where: {
-
+            AND: [
+                {
+                    start: {
+                        gt: start
+                    },
+                    end: {
+                        lt: end
+                    },
+                },
+            ],
             OR: [
                 {
                     AND: [
-                        {
-                            start: {
-                                gt: start
-                            },
-                            end: {
-                                lt: end
-                            },
-                        },
                         {
                             tags: {
                                 some: {
@@ -216,6 +228,11 @@ async function getEvents(searchParams, start: Date, end: Date) {
             start: 'asc'
         }
     });
+
+    console.timeEnd('mainQuery');
+    console.log('-----------------');
+    console.log('-----------------');
+    console.log('-----------------');
 
     return ret;
 }

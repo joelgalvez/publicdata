@@ -1,3 +1,5 @@
+export const dynamic = "force-dynamic";
+
 import { log } from 'console';
 import prisma from '../../../lib/prisma'
 
@@ -15,7 +17,7 @@ export async function GET(request) {
         }
     });
 
-    let all = await fetch('https://newmusicnow.nl/api/ddw?v3')
+    let all = await fetch('https://newmusicnow.nl/api/ddw?v5')
         .then(response => response.json())
 
     for (const [venue, venueArr] of Object.entries(all)) {
@@ -38,8 +40,6 @@ export async function GET(request) {
             });
 
             const venueId = (await venueRecord).id;
-
-            // console.log();
 
             for (let event of venueInner.event) {
 

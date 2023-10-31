@@ -1,3 +1,5 @@
+export const dynamic = "force-dynamic";
+
 import EventDate from '../components/EventDate'
 import prisma from '../../lib/prisma'
 import Link from 'next/link';

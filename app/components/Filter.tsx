@@ -24,15 +24,35 @@ export default function Filter(props) {
     // const [on, setOn] = useState('on');
     // const [str, setStr] = useState('');
 
-    function changed(e) {
 
 
-        let parent = e.target.closest('.checkboxes');
+    function selectAll(e) {
+        let parent = e.target.closest('.checkbox-group');
+        let all = parent.querySelectorAll('input[type=checkbox]');
+        all.forEach(ee => {
+            ee.checked = true;
+        });
+        updateRouter(all);
+        ;
+    }
 
-        let str = '?';
+    function selectNone(e) {
+        let parent = e.target.closest('.checkbox-group');
+        let all = parent.querySelectorAll('input[type=checkbox]');
+        all.forEach(ee => {
+            ee.checked = false;
+        });
+        updateRouter(all);
+        ;
+    }
 
+    function updateRouter() {
+
+        let parent = document.querySelector('.checkboxes');
         let all = parent.querySelectorAll('input[type=checkbox]');
 
+
+        let str = '?';
         all.forEach(c => {
             if (c.checked) {
                 str += c.name + '=1&';
@@ -40,30 +60,16 @@ export default function Filter(props) {
         });
         str = str.slice(0, -1);
 
-        // if (e.target.checked) {
-        //     if (str.search(e.target.name) == -1) {
-        //         console.log('added ' + e.target.name);
-        //         let temp = str + '&' + e.target.name + '=1';
-        //         setStr(temp);
+        router.replace('/q' + str);
 
-        //     }
-        // } else {
-        //     console.log('removed ' + e.target.name);
+    }
 
+    function changed(e) {
 
-        //     // let newArr = on.filter(i => i !== e.target.name);
-        //     // setOn(newArr);
-        // }
+        let parent = e.target.closest('.checkboxes');
+        let all = parent.querySelectorAll('input[type=checkbox]');
 
-        router.push('/q' + str);
-
-        // let temp = '';
-        // for (let o of on) {
-        //     temp += (o + '=1&');
-        // }
-        // setStr(temp);
-        // console.log(on);
-        // console.log(temp);
+        updateRouter(all);
 
 
 
@@ -74,9 +80,14 @@ export default function Filter(props) {
             {/* <Link href={'/q?' + str} className='fixed bottom-4 right-4 bg-red-600 py-2 px-4 rounded-lg text-2xl'>View Result</Link> */}
             <div className="text-sm h-screen overflow-y-scroll p-2 container mx-auto grid gap-8 checkboxes">
 
-                <div className="mb-8">
+                <div className="mb-8 checkbox-group">
                     <div className="">
                         <div className='text-3xl mb-2'>Cities</div>
+                    </div>
+
+                    <div className="">
+                        <span className="mr-2 cursor-pointer" onClick={selectAll}>All</span>
+                        <span className="cursor-pointer" onClick={selectNone}>None</span>
                     </div>
                     <div className="">
                         {cities.map(city => {
@@ -105,6 +116,8 @@ export default function Filter(props) {
                     </div>
                     <details>
                         <summary>All cities</summary>
+
+
                         <div className="">
                             {cities.map(city => {
                                 return (
@@ -131,11 +144,17 @@ export default function Filter(props) {
                             })}
                         </div>
                     </details>
+
                 </div>
-                <div className="mb-8">
+                <div className="mb-8 checkbox-group">
                     <div className="">
                         <div className='text-2xl mb-2'>Tags</div>
                     </div>
+                    <div className="">
+                        <span className="mr-2 cursor-pointer" onClick={selectAll}>All</span>
+                        <span className="cursor-pointer" onClick={selectNone}>None</span>
+                    </div>
+
                     <div className="mb-[1em]">
                         {pinnedTags.map(tag => {
                             return (
@@ -214,7 +233,7 @@ export default function Filter(props) {
                                                     <div className="text-xs mb-1">City</div>
                                                     {venue.cities.map(city => {
                                                         return (
-                                                            <div>{city.title}</div>
+                                                            <div key={city.title}>{city.title}</div>
                                                         )
                                                     })}
                                                 </div>
