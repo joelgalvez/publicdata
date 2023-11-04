@@ -157,8 +157,6 @@ async function getEvents(searchParams, start: Date, end: Date) {
     console.time('mainQuery');
 
     const ret = await prisma.event.findMany({
-        skip: 0,
-        take: 20,
         where: {
             AND: [
                 {

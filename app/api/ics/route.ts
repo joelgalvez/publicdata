@@ -254,7 +254,6 @@ async function getAll(allExport: string) {
     for (let list of allData.lists) {
 
 
-
         let calendarIcsUrls = list.calendars.map(l => l.ics);
 
         let calendars = await prisma.venue.findMany({
