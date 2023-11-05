@@ -225,7 +225,7 @@ export default function Filter(props) {
                                             <div className="">
                                                 <div className="text-xs mb-1">Website(s)</div>
                                                 <div className="">
-                                                    <a className="underline" href={venue.website} target="_blank">{venue.website}</a>
+                                                    <a className="underline" href={venue.website ? venue.website : null} target="_blank">{venue.website}</a>
                                                 </div>
                                             </div>
                                             <div className="">

@@ -37,6 +37,7 @@ model TagGroup {
 
 model Venue {
     id         Int     @id @default(autoincrement())
+    importId   String  @unique
     title      String  @unique
     url        String?
     website    String?
@@ -49,6 +50,8 @@ model Venue {
 
 model Event {
     id          Int      @id @default(autoincrement())
+    uid         String
+    sequence    Int
     summary     String
     description String
     start       DateTime
@@ -60,6 +63,8 @@ model Event {
     venue       Venue    @relation(fields: [venueId], references: [id])
     sourceType  String
     cities      City[]
+
+    @@unique([uid, sequence], name: "uidSequence")
 }
 
 model List {

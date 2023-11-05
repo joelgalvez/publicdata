@@ -8,7 +8,8 @@ if (typeof window === "undefined") {
         // prisma = new PrismaClient({ log: ['query', 'info', 'warn', 'error'], });
     } else {
         if (!global.prisma) {
-            global.prisma = new PrismaClient({ log: ['query', 'info', 'warn', 'error'], });
+            // global.prisma = new PrismaClient({ log: ['query', 'info', 'warn', 'error'], });
+            global.prisma = new PrismaClient({ log: [], });
 
         }
 

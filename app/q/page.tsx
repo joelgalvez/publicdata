@@ -106,7 +106,7 @@ async function getEvents(searchParams, start: Date, end: Date) {
 
 
 
-    console.time('rubbish');
+
 
 
     if (searchParams) {
@@ -149,12 +149,6 @@ async function getEvents(searchParams, start: Date, end: Date) {
 
     let listIds = listRecords.map(lr => lr.id);
 
-    console.log('-----------------');
-    console.log('-----------------');
-    console.log('-----------------');
-
-    console.timeEnd('rubbish');
-    console.time('mainQuery');
 
     const ret = await prisma.event.findMany({
         where: {
@@ -227,10 +221,6 @@ async function getEvents(searchParams, start: Date, end: Date) {
         }
     });
 
-    console.timeEnd('mainQuery');
-    console.log('-----------------');
-    console.log('-----------------');
-    console.log('-----------------');
 
     return ret;
 }

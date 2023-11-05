@@ -1,185 +1,30 @@
-export const dynamic = "force-dynamic";
+// export const dynamic = "force-dynamic";
 
 import prisma from '../../../lib/prisma'
-
-import ICAL from 'ical.js';
-import { promises as fs } from 'fs';
-import path from 'path';
 import IcalExpander from 'ical-expander';
-import { log } from 'console';
-import moment from 'moment';
+// import moment from 'moment';
 
 
-// import ICAL from 'ical.js';
-// import { promises as fs } from 'fs';
-// import path from 'path';
-// import IcalExpander from 'ical-expander';
-
-async function getCalendars(allCalendars) {
-    for (let cal of allCalendars) {
-        if (cal.ics) {
-
-            let prismaVenue = null;
-            // try {
-            prismaVenue = await prisma.venue.create({
-                data: {
-                    website: cal.webpage ? cal.webpage : '',
-                    title: cal.title,
-                    url: cal.ics,
-                    sourceType: 'ics',
-                    tags: {
-                        connectOrCreate: cal.tags.map((tag: String) => {
-                            return {
-                                where: { title: tag },
-                                create: {
-                                    title: tag,
-                                    pinned: false
-                                },
-                            };
-                        }),
-                    },
-                    cities: {
-                        connectOrCreate: cal.cities.map((city: String) => {
-                            return {
-                                where: { title: city },
-                                create: { title: city },
-                            };
-                        }),
-                    }
-                }
-            })
-
-            let venue = await prisma.venue.findUnique({
-                where: {
-                    id: prismaVenue.id
-                },
-                include: {
-                    tags: true,
-                    cities: true
-                }
-            })
-
-            let venueTags = venue?.tags.map(tag => tag.title);
-
-            let venueCities = venue?.cities.map(city => city.title);
-
-            let fileContents = '';
-            if (cal.ics.includes('calendar.google')) {
-                let r = Math.round(Math.random() * 10000000000);
-                cal.ics += '?' + r;
-
-            }
-
-            await fetch(cal.ics, { cache: 'no-store' })
-                // await fetch(cal.ics)
-                .then(response => response.text())
-                .then(text => {
-                    fileContents = text;
-                });
-
-
-            let eventsPerCalendar = null;
-            try {
-                eventsPerCalendar = await expandIcs(fileContents);
-
-            } catch (e) {
-                console.log('Could not expand ics: ' + e);
-                continue;
-            }
-
-
-
-            for (let e of eventsPerCalendar) {
-
-                // response += 'Processing ' + e.summary + "\n";
-
-                const start = new Date(e.startDate);
-                const end = new Date(e.endDate);
-                // const end = `${e.endDate.year}-${e.endDate.month}-${e.endDate.day}T${e.endDate.hour}:${e.endDate.minute}:00`;
-
-
-
-
-                if (end < moment().toDate()) {
-                    continue;
-                };
-
-                let allTags = [];
-                allTags = allTags.concat(e.categories);
-                allTags = allTags.concat(venueTags);
-
-                allTags = allTags.filter(e => {
-                    if (e) {
-                        return e;
-                    }
-                });
-
-
-                let data = {
-                    // calendar: calendar,
-                    venueId: prismaVenue.id,
-                    summary: e.summary ? e.summary : '',
-                    description: e.description ? e.description : '',
-                    start: start,
-                    // start: "2022-01-20T12:01:30.543Z",
-                    end: end,
-                    // end: "2022-01-23T12:01:30.543Z",
-                    url: e.url ? e.url : '',
-                    // lastUpdated: "2022-01-23T12:01:30.543Z",
-                    imageUrl: e.imageUrl ? e.imageUrl : '',
-                    sourceType: 'ics',
-                    tags: {
-                        connectOrCreate: allTags.map((tag: String) => {
-                            return {
-                                where: { title: tag },
-                                create: {
-                                    title: tag,
-                                    pinned: false
-                                },
-                            };
-                        }),
-                    },
-                    cities: {
-                        connectOrCreate: venueCities.map((city: String) => {
-                            return {
-                                where: { title: city },
-                                create: { title: city },
-                            };
-                        }),
-                    },
-
-                }
-                const event = await prisma.event.create({ data })
-
-                // totalEvents++;
-
-            }
-
-
-            // } catch (e) {
-            //     console.trace("\nProblem with " + prismaVenue.title + ' ' + e);
-            // }
-        }
-
-    }
-}
-
-async function expandIcs(ics: string): Array {
+function extractEvents(ics: string) {
 
     let icalExpander = null;
     try {
         icalExpander = new IcalExpander({ ics: ics, maxIterations: 100 });
     } catch (e) {
-        throw new Error('Failed to expand ics');
+
+        return false;
+        // throw new Error('Failed to expand ics');
     }
 
-    const events = icalExpander.between(new Date('2023-05-24T00:00:00.000Z'), new Date('2024-12-31T00:00:00.000Z'));
+    const events = icalExpander.between(new Date('2023-11-03T00:00:00.000Z'), new Date('2024-12-31T00:00:00.000Z'));
 
 
     for (let event of events.events) {
         for (let l of event.component.jCal[1]) {
             let imageUrl = null;
             let url = null;
+            let uid = null;
+
             event.categories = [];
             if (l[0] == 'attach') {
                 imageUrl = l[3];
@@ -188,6 +33,10 @@ async function expandIcs(ics: string): Array {
             if (l[0] == 'url') {
                 url = l[3];
                 event.url = url;
+            }
+            if (l[0] == 'uid') {
+                uid = l[3];
+                event.uid = uid;
             }
             if (l[0] == 'categories') {
                 let temp = l[3];
@@ -203,55 +52,48 @@ async function expandIcs(ics: string): Array {
     }
 
 
+
     const mappedEvents = events.events.map(e => {
+
         return {
             startDate: e.startDate,
             endDate: e.startDate,
             summary: e.summary,
             description: e.description,
-            imageUrl: e.imageUrl,
+            uid: e.uid,
             url: e.url,
-            categories: e.categories,
+            imageUrl: e.imageUrl
         }
     });
 
+
+
     const mappedOccurrences = events.occurrences.map(o => ({
+
         startDate: o.startDate,
         endDate: o.endDate,
+        uid: o.item.uid,
         summary: o.item.summary,
+        description: o.item.description,
         url: o.item.url,
+        imageUrl: o.item.imageUrl
+
         // categories: o.categories,
     }));
 
-    const allEvents = [].concat(mappedEvents, mappedOccurrences);
+    // const allEvents = [].concat(mappedEvents, mappedOccurrences);
 
-    return allEvents;
+    return { 'events': mappedEvents, 'occurrences': mappedOccurrences };
 
 }
 
-async function getAll(allExport: string) {
 
-    let allData = await fetch(allExport)
-        .then(response => response.json())
-
-    await prisma.event.deleteMany({
-        where: {
-            sourceType: 'ics'
-        }
-    });
-
-    await prisma.venue.deleteMany({
-        where: {
-            sourceType: 'ics'
-        }
-    });
-
-    await getCalendars(allData.calendars);
+async function updateLists(jsonLists) {
 
     await prisma.list.deleteMany({});
 
 
-    for (let list of allData.lists) {
+    for (let list of jsonLists) {
 
 
         let calendarIcsUrls = list.calendars.map(l => l.ics);
@@ -279,21 +121,232 @@ async function getAll(allExport: string) {
             }
         })
     }
-
-    await prisma.tag.update({ data: { pinned: true }, where: { title: 'Art' } })
-    await prisma.tag.update({ data: { pinned: true }, where: { title: 'New Music Now' } })
-    await prisma.tag.update({ data: { pinned: true }, where: { title: 'Internet related' } })
-    await prisma.tag.update({ data: { pinned: true }, where: { title: 'Academia' } })
-
 }
 
+async function upsertVenue(cal) {
+
+    if (cal.ics) {
+        console.log('--- upsert ', cal.title);
+
+        let prismaVenue = null;
+
+        let data = {
+            importId: cal.name,
+            website: cal.webpage ? cal.webpage : '',
+            title: cal.title,
+            url: cal.ics,
+            sourceType: 'ics',
+            tags: {
+                connectOrCreate: cal.tags.map((tag: String) => {
+                    return {
+                        where: { title: tag },
+                        create: {
+                            title: tag,
+                            pinned: false
+                        },
+                    };
+                }),
+            },
+            cities: {
+                connectOrCreate: cal.cities.map((city: String) => {
+                    return {
+                        where: { title: city },
+                        create: { title: city },
+                    };
+                }),
+            }
+        };
+
+        // try {
+        return prismaVenue = await prisma.venue.upsert({
+            where: {
+                importId: cal.name
+            },
+            create: data,
+            update: data
+        })
+    }
+}
+
+async function fetchICS(url, cacheBusting) {
+
+    let ret = null;
+
+    try {
+
+        if (cacheBusting === true) {
+            if (url.includes('calendar.google')) {
+                let r = Math.round(Math.random() * 10000000000);
+                url += '?' + r;
+            }
+        }
+
+        let cacheObj = { 'cache': 'force-cache' }
+
+        if (cacheBusting === true) {
+            cacheObj = { 'cache': 'no-store' };
+        }
+
+        await fetch(url, cacheObj)
+            // await fetch(cal.ics)
+            .then(response => response.text())
+            .then(text => {
+                ret = text;
+            });
+
+    } catch (e) {
+        console.trace("\nCannot fetch " + url);
+    }
+
+    return ret;
+}
+
+async function upsertEvent(event, sequence, venuePrisma, venueTagsPrisma, venueCitiesPrisma) {
+
+    const start = new Date(event.startDate);
+    const end = new Date(event.endDate);
+    // const end = `${event.endDatevent.year}-${event.endDatevent.month}-${event.endDatevent.day}T${event.endDatevent.hour}:${event.endDatevent.minute}:00`;
+
+    // if (end < moment().toDate()) {
+    //     continue;
+    // };
+
+    let allTags = [];
+    allTags = allTags.concat(event.categories);
+    allTags = allTags.concat(venueTagsPrisma);
+
+    allTags = allTags.filter(e => {
+        if (e) {
+            return e;
+        }
+    });
+
+    let data = {
+        // calendar: calendar,
+        venueId: venuePrisma.id,
+        uid: event.uid,
+        sequence: sequence,
+        summary: event.summary ? event.summary : '',
+        description: event.description ? event.description : '',
+        start: start,
+        // start: "2022-01-20T12:01:30.543Z",
+        end: end,
+        // end: "2022-01-23T12:01:30.543Z",
+        url: event.url ? event.url : '',
+        // lastUpdated: "2022-01-23T12:01:30.543Z",
+        imageUrl: event.imageUrl ? event.imageUrl : '',
+        sourceType: 'ics',
+        tags: {
+            connectOrCreate: allTags.map((tag: String) => {
+                return {
+                    where: { title: tag },
+                    create: {
+                        title: tag,
+                        pinned: false
+                    },
+                };
+            }),
+        },
+        cities: {
+            connectOrCreate: venueCitiesPrisma.map((city: String) => {
+                return {
+                    where: { title: city },
+                    create: { title: city },
+                };
+            }),
+        },
+
+    }
+    if (event.uid == null) {
+        console.log('ERR --- error uid is null, not creating event ', event.summary);
+    } else {
+        await prisma.event.upsert({
+            where: {
+                uidSequence: {
+                    uid: event.uid,
+                    sequence: sequence
+                }
+            },
+            create: data,
+            update: data,
+        })
+    }
+}
 
 export async function GET(request) {
-    // try {
+
+    // await prisma.event.deleteMany({
+    //     where: {
+    //         sourceType: 'ics'
+    //     }
+    // });
+    // return;
+
+    let cacheBusting = false;
+
+    // let json = await fetch('http://publicdata.jgdev.xyz/export/?v=13', { 'cache': 'no-store' })
+    let json = await fetch('http://publicdata.jgdev.xyz/export/?v=13')
+        .then(response => response.json())
 
 
+    for (let calendar of json.calendars) {
+        await upsertVenue(calendar);
+    }
 
-    await getAll('http://publicdata.jgdev.xyz/export/?v=7');
+    await updateLists(json.lists);
+
+
+    let venuesWithUrl = await prisma.venue.findMany({ where: { NOT: [{ url: null }] } });
+
+    for (let venue of venuesWithUrl) {
+
+        console.log(' --- Venue ' + venue.title);
+
+        let venuePrisma = await prisma.venue.findUnique({
+            where: {
+                id: venue.id
+            },
+            include: {
+                tags: true,
+                cities: true
+            }
+        })
+
+        let venueTagsPrisma = venuePrisma?.tags.map(tag => tag.title);
+
+        let venueCitiesPrisma = venuePrisma?.cities.map(city => city.title);
+
+        const ics = await fetchICS(venue.url, cacheBusting);
+
+        if (ics == null) {
+            console.log('ERR --- Failed to fetch ' + venue.title);
+        } else {
+
+            const ret = extractEvents(ics);
+
+            // console.log(JSON.stringify(ret, null, 4));
+
+
+            if (ret === false) {
+                console.log('ERR --- failed to expand ics ' + venue.title);
+            } else {
+
+                const { events, occurrences } = ret;
+
+                for (const event of events) {
+                    await upsertEvent(event, 0, venuePrisma, venueTagsPrisma, venueCitiesPrisma);
+                }
+                let sequence = 1;
+                for (const occ of occurrences) {
+                    await upsertEvent(occ, sequence++, venuePrisma, venueTagsPrisma, venueCitiesPrisma);
+                }
+
+            }
+
+        }
+    }
+
+
     return new Response('OK');
     // } catch (e) {
     //     return new Response('Not OK: ' + e);

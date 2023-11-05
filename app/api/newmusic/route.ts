@@ -35,11 +35,14 @@ export async function GET(request) {
                     title: venue,
                     sourceType: 'nmn',
                     // url: 'https://newmusicnow.nl',
-                    website: 'https://newmusicnow.nl'
+                    website: 'https://newmusicnow.nl',
+                    importId: venue
                 }
             });
 
             const venueId = (await venueRecord).id;
+
+            let firstEvent = true;
 
             for (let event of venueInner.event) {
 
@@ -70,9 +73,6 @@ export async function GET(request) {
                     allTags.push('New Music Now');
 
 
-
-
-
                     let allCities = [venueInner.address.addressLocality];
 
                     const r = await prisma.event.create({
@@ -81,6 +81,8 @@ export async function GET(request) {
                             description: event.description,
                             venueId: venueId,
                             url: event.url,
+                            uid: Math.round(Math.random() * 1000000000000000).toString(),
+                            sequence: 0,
                             start: start,
                             end: end,
                             imageUrl: '',
@@ -110,61 +112,12 @@ export async function GET(request) {
                 } catch (e) {
                     return new Response('problem with event' + venueInner.name + ', ' + event.name + ': ' + e);
                 }
+                firstEvent = false;
             }
         }
 
-        // const ret2 = await prisma.event.create({
-        //     data: {
-        //         summary: 
-        //         title: l.title,
-        //         url: l.ics,
-        //         tags: {
-        //             connectOrCreate: tags.map((tag) => {
-        //                 return {
-        //                     where: { title: tag },
-        //                     create: { title: tag },
-        //                 };
-        //             }),
-        //         }
-        //     }
-        // })            
-
     }
 
-
-    // let tags = ['Art', 'Amsterdam'];
-
-    // for (let l of f) {
-
-    //     const r = await prisma.event.create({
-    //         data: {
-    //             website: l.website ? l.website : '',
-    //             title: l.title,
-    //             url: l.ics,
-    //             tags: {
-    //                 connectOrCreate: tags.map((tag) => {
-    //                     return {
-    //                         where: { title: tag },
-    //                         create: { title: tag },
-    //                     };
-    //                 }),
-    //             }
-    //         }
-    //     })
-    //     total++;
-
-    // }
-
     return new Response('ok');
-
-    // } catch (e) {
-    //     return new Response('not ok' + e);
-    // }
-
-
-
-
-
-
 
 }

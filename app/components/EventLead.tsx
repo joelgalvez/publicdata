@@ -11,8 +11,8 @@ export default function EventLead(props) {
             <div className=" mb-2">
                 {event.venue &&
                     <div className="flex h-12 my-2 items-center gap-3">
-                        <div className="w-[2rem] flex items-center justify-center">
-                            <img loading="lazy" className="" src={`https://www.google.com/s2/favicons?domain=${event.venue.website}&sz=256`} alt="" />
+                        <div className="w-[2rem] h-[2rem] flex items-center justify-center bg-white">
+                            <img loading="lazy" className="" src={`https://www.google.com/s2/favicons?domain=${event.url ? event.url : event.venue.website}&sz=256`} alt="" />
                         </div>
                         <div className="">{event.venue.title}</div>
                     </div>
