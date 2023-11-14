@@ -1,19 +1,12 @@
 export const dynamic = "force-dynamic";
 
 import Link from 'next/link'
-import prisma from '../../lib/prisma'
+import { getEvents } from '../../lib/getEvents'
 import moment from 'moment';
-import navigation from 'next/navigation';
+
 import EventLead from '../components/EventLead';
 
-import Day from '../components/Day';
-import { log } from 'console';
-
-
 export default async function Page({ params, searchParams }) {
-
-
-
 
 
     // let open = true;
@@ -42,11 +35,9 @@ export default async function Page({ params, searchParams }) {
 
     let start = moment().toDate();
     let end = moment().add(2, 'years').toDate();
-    const all = await getEvents(searchParams, start, end)
-
+    const all = await getEvents(searchParams, start, end);
 
     // let month = await getEvents(monthStart, monthEnd);
-
 
     return (
         <>
@@ -62,6 +53,7 @@ export default async function Page({ params, searchParams }) {
                             })}
                         </div>
                     </div>
+
                     {/* 
                 <div className="">
                     <h2 className="text-6xl m-4 mt-16"><Day date={monthStart} endDate={monthEnd} /></h2>
@@ -85,7 +77,6 @@ export default async function Page({ params, searchParams }) {
                     </div>
                 </div> */}
 
-
                 </div >
 
                 <div className="fixed top-0 right-2">
@@ -98,129 +89,8 @@ export default async function Page({ params, searchParams }) {
 
         </>
     )
+
+
 }
 
-async function getEvents(searchParams, start: Date, end: Date) {
-
-    let tags = [];
-    let lists = [];
-    let cities = [];
-    let venues = [];
-
-
-    if (searchParams) {
-        for (const [key, value] of Object.entries(searchParams)) {
-            if (key.substring(0, 3) == 'tag') {
-                tags.push(key.substring(4, key.length));
-            }
-        }
-
-        for (const [key, value] of Object.entries(searchParams)) {
-            if (key.substring(0, 4) == 'list') {
-                lists.push(key.substring(5, key.length));
-            }
-        }
-
-        for (const [key, value] of Object.entries(searchParams)) {
-            if (key.substring(0, 4) == 'city') {
-                cities.push(key.substring(5, key.length));
-            }
-        }
-        for (const [key, value] of Object.entries(searchParams)) {
-            if (key.substring(0, 5) == 'venue') {
-                venues.push(key.substring(6, key.length));
-            }
-        }
-    }
-
-
-    let listSelect = lists.map(l => {
-        return { 'title': l }
-    })
-
-
-    let listRecords = await prisma.list.findMany({
-        where: {
-            OR: listSelect
-        }
-    })
-
-
-    let listIds = listRecords.map(lr => lr.id);
-
-
-    const ret = await prisma.event.findMany({
-        where: {
-            AND: [
-                {
-                    start: {
-                        gt: start
-                    },
-                    end: {
-                        lt: end
-                    },
-                },
-            ],
-            OR: [
-                {
-                    AND: [
-                        {
-                            tags: {
-                                some: {
-                                    // title: searchParams.tag
-                                    title: {
-                                        in: tags
-                                    }
-                                }
-                            }
-                        },
-                        {
-                            cities: {
-                                some: {
-                                    // title: searchParams.tag
-                                    title: {
-                                        in: cities
-                                    }
-                                }
-                            },
-                        }
-                    ],
-                },
-                {
-                    venue: {
-                        title: {
-                            in: venues
-                        }
-                    }
-                },
-                {
-                    venue: {
-                        lists: {
-                            some: {
-                                id: {
-                                    in: listIds
-                                }
-                            }
-                        }
-                    }
-                }
-            ]
-        },
-        include: {
-            venue: {
-                include: {
-                    tags: true,
-                    lists: true
-                }
-            },
-            tags: true
-        },
-        orderBy: {
-            start: 'asc'
-        }
-    });
-
-
-    return ret;
-}
 

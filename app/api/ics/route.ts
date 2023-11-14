@@ -2,6 +2,7 @@ export const dynamic = "force-dynamic";
 
 import prisma from '../../../lib/prisma'
 import IcalExpander from 'ical-expander';
+
 // import moment from 'moment';
 
 
@@ -282,7 +283,7 @@ export async function GET(request) {
     // });
     // return;
 
-    let cacheBusting = false;
+    let cacheBusting = true;
 
     // let json = await fetch('http://publicdata.jgdev.xyz/export/?v=13', { 'cache': 'no-store' })
     let json = await fetch('http://publicdata.jgdev.xyz/export/?v=13')
