@@ -4,36 +4,37 @@
 
 :root {
   --foreground-rgb: 0, 0, 0;
-  --background-start-rgb: 214, 219, 220;
-  --background-end-rgb: 255, 255, 255;
+  --background-rgb: 214, 219, 220;
 }
 
 
+
 .button {
-  background-color: rgb(29, 29, 29);
+  background-color: rgb(var(--foreground-rgb));
   @apply rounded-md px-2 py-1 inline-block;
-  color: rgb(218, 218, 218);
+  color: rgb(var(--background-rgb));
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
     --foreground-rgb: 255, 255, 255;
-    --background-start-rgb: 0, 0, 0;
-    --background-end-rgb: 0, 0, 0;
+    --background-rgb: 0, 0, 0;
+    
   }
 
   .button {
-    background-color: rgb(234, 234, 234);
-    color: black;
+    background-color: rgb(var(--foreground-rgb));
+    color: rgb(var(--background-rgb));
   }  
 }
 
+.panel,
 body {
   color: rgb(var(--foreground-rgb));
-  background: linear-gradient(to bottom,
-      transparent,
-      rgb(var(--background-end-rgb))) rgb(var(--background-start-rgb));
+  background-color: rgb(var(--background-rgb));
 }
+
+
 
 .text p+p {
   @apply mt-4;
@@ -55,4 +56,35 @@ details > summary {
  list-style: none;
  @apply m-1;
 
+}
+
+.filter-panel {
+  transform: translate3d(200px, 0, 0);
+}
+
+.shade {
+  box-shadow: 0 0 20px black, 0 0 30px black;
+}
+.skew {
+  /* transform: skewX(-20deg); */
+}
+
+@keyframes glow {
+  0% {
+    box-shadow: 0 0 30px red, 0 0 50px red;
+    background-color: rgb(255, 0, 0);
+    color: rgb(255, 186, 133);
+  }
+  100% {
+    box-shadow: 0 0 3px red, 0 0 10px red;
+     background-color: rgb(255, 88, 88);
+     color: white;
+  }
+}
+
+.glow {
+  animation-name: glow;
+  animation-duration: 1.9s;
+  animation-direction: alternate;
+  animation-iteration-count: infinite;
 }

@@ -50,18 +50,19 @@ export default async function Page({ params, searchParams }) {
 
     return (
         <>
-            <div className="h-screen overflow-y-auto">
-                <div className="">
-                    {/* <h2 className="text-6xl m-4 mt-16"><Day date={day.day} /></h2> */}
-                    <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 m-4">
-                        {all.map(event => {
-                            return (
-                                <EventLead event={event} key={event.id} />
-                            )
-                        })}
+            <div className="">
+                <div className="h-screen overflow-y-auto">
+                    <div className="">
+                        {/* <h2 className="text-6xl m-4 mt-16"><Day date={day.day} /></h2> */}
+                        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 m-4">
+                            {all.map(event => {
+                                return (
+                                    <EventLead event={event} key={event.id} />
+                                )
+                            })}
+                        </div>
                     </div>
-                </div>
-                {/* 
+                    {/* 
                 <div className="">
                     <h2 className="text-6xl m-4 mt-16"><Day date={monthStart} endDate={monthEnd} /></h2>
                     <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 m-4">
@@ -85,12 +86,14 @@ export default async function Page({ params, searchParams }) {
                 </div> */}
 
 
-            </div >
+                </div >
 
-            <div className="fixed top-0 right-0">
-                <Link href="/subscribe">
-                    <div className="m-6 px-4 py-2 bg-red-500 text-xl">Subscribe</div>
-                </Link>
+                <div className="fixed top-0 right-2">
+                    <Link href="/subscribe">
+                        <div className="m-4 rounded-md button text-sm glow">Subscribe</div>
+                    </Link>
+                </div>
+
             </div>
 
         </>
@@ -103,10 +106,6 @@ async function getEvents(searchParams, start: Date, end: Date) {
     let lists = [];
     let cities = [];
     let venues = [];
-
-
-
-
 
 
     if (searchParams) {

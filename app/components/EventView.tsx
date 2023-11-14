@@ -16,21 +16,24 @@ export default function EventView(props) {
     return (
         <div className="" onClick={onBack}>
 
-            <div className="fixed bg-black/70 w-full h-screen right-0 top-0 ">
+            <div className="fixed opacity-50 bg-black/50 w-full h-screen right-0 top-0 ">
             </div >
 
-            <div className="bg-black absolute p-4  top-0 right-0 h-screen w-[90%] lg:w-[50rem] overflow-y-auto" >
+            <div className="panel absolute p-4  top-0 right-0 h-screen w-[90%] lg:w-[50rem] overflow-y-auto" >
+                {event.venue &&
+                    <div className="flex h-12 my-2 items-center gap-3">
+                        <div className="w-[2rem] h-[2rem] flex items-center justify-center bg-white">
+                            <img loading="lazy" className="" src={`https://www.google.com/s2/favicons?domain=${event.url ? event.url : event.venue.website}&sz=256`} alt="" />
+                        </div>
+                        <div className="">{event.venue.title}</div>
+                    </div>
+                }
+
                 {event && event.venue &&
                     < div >
                         <header className="">
                             <hgroup className="">
-                                {event && event.venue &&
-                                    <div className="">
-                                        <h4 className="">
-                                            {event.venue.title}
-                                        </h4>
-                                    </div>
-                                }
+
                                 <h1 className="text-7xl mb-4">
                                     {event.summary}
                                 </h1>
@@ -51,8 +54,8 @@ export default function EventView(props) {
                         </header>
                         {event.venue &&
                             <article className="max-w-[50rem] ">
-                                {event.venue.imageUrl &&
-                                    <img className="mb-4 w-fit mx-auto" src={event.venue.imageUrl} alt="" />
+                                {event.imageUrl &&
+                                    <img className="mb-4 " src={event.imageUrl} alt="" />
                                 }
                                 <pre className="text text-xl break-normal whitespace-break-spaces">
                                     {event.description}

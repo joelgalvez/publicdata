@@ -21,19 +21,18 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={inter.className}>
-
-        <div className="grid grid-cols-[18rem,1fr]">
-
+        <div className="grid grid-cols-[auto,1fr]">
           <div className=''>{filter}</div>
-          <div className=''>{children}</div>
-          <div className=''>{event}</div>
-          <div className='subscribe '>{subscribe}</div>
+          <div className="">
+            <div className=''>{children}</div>
+            <div className=''>{event}</div>
+            <div className='subscribe'>{subscribe}</div>
+          </div>
+
         </div>
         {/* <main className="fixed top-[50vh] h-screen w-full overflow-y-scroll bg-black">
             {result}
           </main> */}
-
-
       </body>
     </html>
   )

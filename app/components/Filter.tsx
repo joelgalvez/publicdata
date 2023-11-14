@@ -14,6 +14,9 @@ import InformationDialog from './InformationDialog'
 
 export default function Filter(props) {
 
+    const [visible, setVisible] = useState(false);
+    // let visible = props.data.visible;
+
     let lists = props.data.lists;
     let cities = props.data.cities;
     let unpinnedTags = props.data.unpinnedTags;
@@ -84,6 +87,10 @@ export default function Filter(props) {
         }
     }
 
+    // function setVisible(v) {
+    //     this.visible = visible;
+    // }
+
     function selectAll(e) {
         let parent = e.target.closest('.checkbox-group');
         let all = parent.querySelectorAll('input[type=checkbox]');
@@ -127,6 +134,8 @@ export default function Filter(props) {
 
         router.replace('/q' + str);
 
+        localStorage.setItem('q', str);
+
     }
 
     function changed(e) {
@@ -138,25 +147,41 @@ export default function Filter(props) {
 
     }
 
+    function show() {
+        setVisible(true);
+    }
+
+    function hide() {
+        setVisible(false);
+    }
+
     return (
         <>
             {/* <Link href={'/q?' + str} className='fixed bottom-4 right-4 bg-red-600 py-2 px-4 rounded-lg text-2xl'>View Result</Link> */}
-            <div className="text-sm h-screen overflow-y-scroll p-2 container mx-auto grid gap-8 content-start checkboxes">
 
-                <div className="">
-                    <div className="button inline-block cursor-pointer" onClick={clearAll}>Clear all</div>
+            <div className={(visible ? 'hidden' : 'block') + ' absolute top-0 left-0 m-4 '}>
+                <div className="button cursor-pointer text-sm shade" onClick={show}>Filters</div>
+            </div>
+
+            <div className={(visible ? 'block' : 'hidden') + ' panel  text-sm h-screen overflow-y-scroll p-4 container mx-auto grid gap-8 content-start checkboxes absolute z-20 md:static w-[calc(100%-3rem)] md:w-full md:max-w-[17rem]'}>
+
+                <div className="flex gap-4 justify-between">
+                    <div className="">
+                        <div className="button inline-block cursor-pointer" onClick={clearAll}>Clear all</div>
+                    </div>
+                    <div className="cross text-xl text-right cursor-pointer" onClick={hide}>
+                        ✕
+                    </div>
 
                 </div>
 
                 <div className=" checkbox-group">
                     <div className='text-2xl mr-2 mb-2'>Cities</div>
-                    <span className="cursor-pointer button" onClick={selectNone}>Clear</span>
+                    <span className="cursor-pointer button mb-2" onClick={selectNone}>Clear</span>
 
-                    <div className="mb-2">
-                        {/* <span className="mr-2 cursor-pointer button" onClick={selectAll}>All</span> */}
-
-
-                    </div>
+                    {/* <div className="mb-2">
+                        <span className="mr-2 cursor-pointer button" onClick={selectAll}>All</span>
+                    </div> */}
                     <div className="">
                         {cities.map(city => {
                             return (
@@ -262,7 +287,7 @@ export default function Filter(props) {
                             <div className="text-xs opacity-80 my-4 rounded-md bg-blue-100 py-3 px-4  text-blue-800">
                                 <div className="flex gap-4">
                                     <div className="text-2xl">ⓘ</div>
-                                    <div className="">Selecting the pinned tags will already cover all events, the remaining tags below are only for specialization</div>
+                                    <div className="">Selecting the pinned tags above will already cover all events, the remaining tags below are only for specialization</div>
                                 </div>
                             </div>
 
@@ -351,7 +376,6 @@ export default function Filter(props) {
                 <div className="">
                     <div className="">
                         <div className='text-2xl mb-2'>Curated Lists</div>
-                        <div className="mb-2 text-xs opacity-70">The admin is listed under ⓘ, contact them if you want to be added</div>
                     </div>
                     {lists.map(list => {
                         return (
@@ -373,7 +397,7 @@ export default function Filter(props) {
                     })}
                 </div>
 
-            </div>
+            </div >
         </>
     )
 }
