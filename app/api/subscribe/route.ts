@@ -95,9 +95,6 @@ export async function GET(request) {
             dayEvents.push(dayEvent);
         }
 
-
-
-
     }
 
 

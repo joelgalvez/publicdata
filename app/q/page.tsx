@@ -37,6 +37,7 @@ export default async function Page({ params, searchParams }) {
     let end = moment().add(2, 'years').toDate();
     const all = await getEvents(searchParams, start, end);
 
+
     // let month = await getEvents(monthStart, monthEnd);
 
     return (

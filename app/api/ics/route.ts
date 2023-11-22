@@ -286,7 +286,7 @@ export async function GET(request) {
     let cacheBusting = true;
 
     // let json = await fetch('http://publicdata.jgdev.xyz/export/?v=13', { 'cache': 'no-store' })
-    let json = await fetch('http://publicdata.jgdev.xyz/export/?v=13')
+    let json = await fetch('http://publicdata.jgdev.xyz/export/?v=14')
         .then(response => response.json())
 
 
