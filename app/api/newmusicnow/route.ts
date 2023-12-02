@@ -11,6 +11,14 @@ import prisma from '../../../lib/prisma'
 
 export async function GET(request) {
 
+    function isIterable(obj) {
+        // checks for null and undefined
+        if (obj == null) {
+            return false;
+        }
+        return typeof obj[Symbol.iterator] === 'function';
+    }
+
     await prisma.event.deleteMany({
         where: {
             sourceType: 'nmn'
@@ -22,7 +30,9 @@ export async function GET(request) {
 
     for (const [venue, venueArr] of Object.entries(all)) {
 
+
         for (let venueInner of venueArr) {
+
 
             const venueRecord = prisma.venue.upsert({
                 where: {
@@ -44,75 +54,83 @@ export async function GET(request) {
 
             let firstEvent = true;
 
-            for (let event of venueInner.event) {
 
-                try {
+            if (!venueInner.event) {
+                continue;
+            }
 
-                    if (!event) {
-                        continue;
-                    }
-
-                    if (event.startDate == 'undefined') {
-                        continue;
-                    }
-
-                    let start = new Date(event.startDate);
-
-                    let end = null;
-                    if (!event.endDate || event.endDate == 'undefined') {
-                        end = start;
-                    } else {
-                        end = new Date(event.endDate);
-                    }
-
-                    // console.log('Tag-addr: ' + venueInner.address.addressLocality);
-
-                    let allTags = [];
-                    allTags = allTags.concat(event.keywords);
-
-                    allTags.push('New Music Now');
+            if (isIterable(venueInner.event)) {
+                for (let event of venueInner.event) {
 
 
-                    let allCities = [venueInner.address.addressLocality];
+                    try {
 
-                    const r = await prisma.event.create({
-                        data: {
-                            summary: event.name,
-                            description: event.description,
-                            venueId: venueId,
-                            url: event.url,
-                            uid: Math.round(Math.random() * 1000000000000000).toString(),
-                            sequence: 0,
-                            start: start,
-                            end: end,
-                            imageUrl: '',
-                            sourceType: 'nmn',
-                            tags: {
-                                connectOrCreate: allTags.map((tag: String) => {
-                                    return {
-                                        where: { title: tag },
-                                        create: {
-                                            title: tag,
-                                            pinned: false
-                                        },
-                                    };
-                                }),
-                            },
-                            cities: {
-                                connectOrCreate: allCities.map((city: String) => {
-                                    return {
-                                        where: { title: city },
-                                        create: { title: city },
-                                    };
-                                }),
-                            },
+                        if (!event) {
+                            continue;
                         }
-                    })
 
-                } catch (e) {
-                    return new Response('problem with event' + venueInner.name + ', ' + event.name + ': ' + e);
+                        if (event.startDate == 'undefined') {
+                            continue;
+                        }
+
+                        let start = new Date(event.startDate);
+
+                        let end = null;
+                        if (!event.endDate || event.endDate == 'undefined') {
+                            end = start;
+                        } else {
+                            end = new Date(event.endDate);
+                        }
+
+                        // console.log('Tag-addr: ' + venueInner.address.addressLocality);
+
+                        let allTags = [];
+                        allTags = allTags.concat(event.keywords);
+
+                        allTags.push('New Music Now');
+
+
+                        let allCities = [venueInner.address.addressLocality];
+
+                        const r = await prisma.event.create({
+                            data: {
+                                summary: event.name,
+                                description: event.description,
+                                venueId: venueId,
+                                url: event.url,
+                                uid: Math.round(Math.random() * 1000000000000000).toString(),
+                                sequence: 0,
+                                start: start,
+                                end: end,
+                                imageUrl: '',
+                                sourceType: 'nmn',
+                                tags: {
+                                    connectOrCreate: allTags.map((tag: String) => {
+                                        return {
+                                            where: { title: tag },
+                                            create: {
+                                                title: tag,
+                                                pinned: false
+                                            },
+                                        };
+                                    }),
+                                },
+                                cities: {
+                                    connectOrCreate: allCities.map((city: String) => {
+                                        return {
+                                            where: { title: city },
+                                            create: { title: city },
+                                        };
+                                    }),
+                                },
+                            }
+                        })
+
+                    } catch (e) {
+                        return new Response('problem with event' + venueInner.name + ', ' + event.name + ': ' + e);
+                    }
+                    firstEvent = false;
                 }
-                firstEvent = false;
             }
         }
 

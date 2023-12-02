@@ -37,6 +37,21 @@ export default async function Page({ params, searchParams }) {
     let end = moment().add(2, 'years').toDate();
     const all = await getEvents(searchParams, start, end);
 
+    let days = [];
+    for (let d = 0; d < 90; d++) {
+        let thisDayStarts = moment().startOf('day').add(d, 'days').toDate();
+        let thisDayEnds = moment(thisDayStarts).add(24, 'hours').toDate();
+        let eventsThisDay = all.filter(e => {
+            if ((e.start >= thisDayStarts && e.start <= thisDayEnds) || (e.end >= thisDayStarts && e.end <= thisDayEnds)) {
+                return e;
+            }
+        })
+        let day = {
+            'date': thisDayStarts,
+            'events': eventsThisDay
+        }
+        days.push(day);
+    }
 
     // let month = await getEvents(monthStart, monthEnd);
 
@@ -46,13 +61,24 @@ export default async function Page({ params, searchParams }) {
                 <div className="h-screen overflow-y-auto">
                     <div className="">
                         {/* <h2 className="text-6xl m-4 mt-16"><Day date={day.day} /></h2> */}
-                        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 m-4">
-                            {all.map(event => {
-                                return (
-                                    <EventLead event={event} key={event.id} />
-                                )
-                            })}
-                        </div>
+
+                        {days.map(day => {
+                            return (
+                                // <EventLead event={event} key={event.id} />
+                                <div className="">
+                                    <div className="mb-2 mt-16 text-7xl px-2">{moment(day.date).format('dddd MMM Do YYYY')}</div>
+                                    <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4 px-2">
+
+                                        {day.events.map(event => {
+                                            return (
+                                                <EventLead event={event} key={event.id}></EventLead>
+                                            )
+                                        })}
+                                    </div>
+                                </div>
+                            )
+                        })}
+                        {/* </div> */}
                     </div>
 
                     {/* 
