@@ -58,7 +58,7 @@ export default async function Page({ params, searchParams }) {
 
     return (
         <>
-            {env.TEST}
+
             <div className="">
                 <div className="h-screen overflow-y-auto">
                     <div className="">
