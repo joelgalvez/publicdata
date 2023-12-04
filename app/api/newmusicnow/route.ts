@@ -25,7 +25,7 @@ export async function GET(request) {
         }
     });
 
-    let all = await fetch('https://newmusicnow.nl/api/ddw?v5')
+    let all = await fetch('https://newmusicnow.nl/api/ddw?random' + Math.round(Math.random() * 100000000))
         .then(response => response.json())
 
     for (const [venue, venueArr] of Object.entries(all)) {

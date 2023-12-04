@@ -283,10 +283,34 @@ export async function GET(request) {
     // });
     // return;
 
+    let last = await prisma.last.findUnique({
+        where: {
+            strid: 'ics'
+        }
+    })
+
+
+    if (last === null) {
+        await prisma.last.create({
+            data: {
+                strid: 'ics',
+                updated: new Date()
+            }
+        })
+    } else {
+        let now = new Date();
+        let diff = now - last.updated;
+        if (diff < 14400000) {
+            return new Response('OK');
+        }
+    }
+
+
+
     let cacheBusting = true;
 
     // let json = await fetch('http://publicdata.jgdev.xyz/export/?v=13', { 'cache': 'no-store' })
-    let json = await fetch('http://publicdata.jgdev.xyz/export/?v=14')
+    let json = await fetch(process.env.NEXT_PUBLIC_SOURCES + '?random=' + Math.round(Math.random() * 1000000000))
         .then(response => response.json())
 
 

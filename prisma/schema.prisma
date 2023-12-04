@@ -73,3 +73,9 @@ model List {
     name   String  @unique
     venues Venue[]
 }
+
+model Last {
+    id      Int      @id @default(autoincrement())
+    strid   String   @unique
+    updated DateTime
+}

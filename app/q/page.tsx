@@ -5,6 +5,7 @@ import { getEvents } from '../../lib/getEvents'
 import moment from 'moment';
 
 import EventLead from '../components/EventLead';
+import { env } from 'process';
 
 export default async function Page({ params, searchParams }) {
 
@@ -57,6 +58,7 @@ export default async function Page({ params, searchParams }) {
 
     return (
         <>
+            {env.TEST}
             <div className="">
                 <div className="h-screen overflow-y-auto">
                     <div className="">

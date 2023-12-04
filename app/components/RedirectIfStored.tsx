@@ -13,7 +13,7 @@ export default function RedirectIfStored(props) {
         if (q) {
             router.replace('/q' + q);
         } else {
-            router.replace('/q?city-Amsterdam=1&tag-Art=1&tag-New Music Now=1')
+            router.replace(process.env.NEXT_PUBLIC_DEFAULT_URL);
         }
     }, [router]);
 
