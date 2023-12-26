@@ -52,6 +52,7 @@ model Event {
     id          Int      @id @default(autoincrement())
     uid         String
     sequence    Int
+    scraped     Boolean  @default(false)
     summary     String
     description String
     start       DateTime

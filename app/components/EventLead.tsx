@@ -35,6 +35,9 @@ export default function EventLead(props) {
             <div className="text-sm mb-4">
                 {event.description.replace(/(<([^>]+)>)/gi, "").substring(0, 100)}...
             </div>
+            {event.scraped &&
+                <div className="my-4 text-sm"> ⚠️ Scraped event</div>
+            }
         </Link>
     )
 }

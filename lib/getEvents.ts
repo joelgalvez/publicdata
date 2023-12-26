@@ -50,16 +50,16 @@ export async function getEvents(searchParams, start: Date, end: Date) {
 
     const ret = await prisma.event.findMany({
         where: {
-            AND: [
-                {
-                    start: {
-                        gt: start
-                    },
-                    end: {
-                        lt: end
-                    },
-                },
-            ],
+            // AND: [
+            //     {
+            //         start: {
+            //             gt: start
+            //         },
+            //         end: {
+            //             lt: end
+            //         },
+            //     },
+            // ],
             OR: [
                 {
                     AND: [

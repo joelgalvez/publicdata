@@ -16,7 +16,7 @@ export default function EventView(props) {
     return (
         <div className="" onClick={onBack}>
 
-            <div className="fixed opacity-50 bg-black/50 w-full h-screen right-0 top-0 ">
+            <div className="fixed bg-opacity-95 bg-black/50 w-full h-screen right-0 top-0 ">
             </div >
 
             <div className="panel absolute p-4  top-0 right-0 h-screen w-[90%] lg:w-[50rem] overflow-y-auto" >
@@ -28,6 +28,7 @@ export default function EventView(props) {
                         <div className="">{event.venue.title}</div>
                     </div>
                 }
+
 
                 {event && event.venue &&
                     < div >
@@ -64,6 +65,10 @@ export default function EventView(props) {
                         }
                     </div>
                 }
+                {event.scraped &&
+                    <div className="my-4 text-sm"> ⚠️ Warning this is scraped data, it's less reliable</div>
+                }
+
 
             </div>
 

@@ -29,7 +29,7 @@ export default function EventDate(props) {
             dd += '-' + moment(end).format('HH:SS');
         }
     } else {
-        dd = moment(start).format('DD MMM') + ' — ' + moment(end).format('DD MMM')
+        dd = moment(start).format('DD MMM YYYY') + ' — ' + moment(end).format('DD MMM YYYY')
     }
 
     return (
