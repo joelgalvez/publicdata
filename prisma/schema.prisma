@@ -80,3 +80,10 @@ model Last {
     strid   String   @unique
     updated DateTime
 }
+
+model Settings {
+    id    Int      @id @default(autoincrement())
+    key   String   @unique
+    date  DateTime
+    value String
+}

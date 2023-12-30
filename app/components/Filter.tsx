@@ -10,8 +10,6 @@ import Link from 'next/link'
 import InformationDialog from './InformationDialog'
 
 
-
-
 export default function Filter(props) {
 
     const [visible, setVisible] = useState(false);
@@ -26,8 +24,6 @@ export default function Filter(props) {
 
     const router = useRouter();
 
-    // const [on, setOn] = useState('on');
-    // const [str, setStr] = useState('');
 
     useLayoutEffect(() => {
         selectFromURL();
@@ -36,15 +32,22 @@ export default function Filter(props) {
 
 
     function escape(s: string): string {
-        console.log(s);
+
         return s.replace("'", "\\'");
 
     }
-    //there is probably a better way:
 
+    //there is probably a better way?
 
     function selectFromURL() {
+
+
+
         const s = window.location.search;
+
+        console.log('selectFromUrl', s);
+
+
 
         if (s[0] === '?') {
             let str = s.slice(1);
@@ -370,10 +373,10 @@ export default function Filter(props) {
 
                 </div>
 
-                <hr />
 
 
-                <div className="">
+
+                {/* <div className="">
                     <div className="">
                         <div className='text-2xl mb-2'>Curated Lists</div>
                     </div>
@@ -382,9 +385,7 @@ export default function Filter(props) {
                             <div key={list.id}>
                                 <input type="checkbox" name={'list-' + list.title} value="1" onChange={changed} />
                                 <label className="ml-1 mr-1" htmlFor={'list-' + list.title}>{list.title}</label>
-                                {/* <pre className="text-sm">
-                                    {JSON.stringify(list, null, 4)}
-                                </pre> */}
+                     
                                 <InformationDialog html={list.venues.map(venue => {
                                     return (
                                         <div className="text-xs ml-4" key={venue.id}>
@@ -395,7 +396,7 @@ export default function Filter(props) {
                             </div>
                         )
                     })}
-                </div>
+                </div> */}
 
             </div >
         </>

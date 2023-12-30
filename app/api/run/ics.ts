@@ -1,5 +1,3 @@
-export const dynamic = "force-dynamic";
-
 import prisma from '../../../lib/prisma'
 import { upsertEvent } from '../../../lib/upsertEvent'
 import IcalExpander from 'ical-expander';
@@ -205,7 +203,10 @@ async function fetchICS(url, cacheBusting) {
 
 
 
-export async function GET(request) {
+export async function runIcs() {
+
+    console.log('-------- Running ics import');
+
 
     // await prisma.event.deleteMany({
     //     where: {
@@ -214,27 +215,27 @@ export async function GET(request) {
     // });
     // return;
 
-    let last = await prisma.last.findUnique({
-        where: {
-            strid: 'ics'
-        }
-    })
+    // let last = await prisma.last.findUnique({
+    //     where: {
+    //         strid: 'ics'
+    //     }
+    // })
 
 
-    if (last === null) {
-        await prisma.last.create({
-            data: {
-                strid: 'ics',
-                updated: new Date()
-            }
-        })
-    } else {
-        let now = new Date();
-        let diff = now - last.updated;
-        if (diff < 14400000) {
-            return new Response('OK');
-        }
-    }
+    // if (last === null) {
+    //     await prisma.last.create({
+    //         data: {
+    //             strid: 'ics',
+    //             updated: new Date()
+    //         }
+    //     })
+    // } else {
+    //     let now = new Date();
+    //     let diff = now - last.updated;
+    //     if (diff < 14400000) {
+    //         return new Response('OK');
+    //     }
+    // }
 
 
 
@@ -269,9 +270,7 @@ export async function GET(request) {
         })
 
         let venueTagsPrisma = venuePrisma?.tags.map(tag => tag.title);
-
         let venueCitiesPrisma = venuePrisma?.cities.map(city => city.title);
-
 
         const ics = await fetchICS(venue.url, cacheBusting);
 
@@ -307,12 +306,10 @@ export async function GET(request) {
                 console.log(' ');
 
             }
-
         }
     }
 
-
-    return new Response('OK');
+    return true;
     // } catch (e) {
     //     return new Response('Not OK: ' + e);
     // }

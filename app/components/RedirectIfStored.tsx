@@ -13,7 +13,10 @@ export default function RedirectIfStored(props) {
         if (q) {
             router.replace('/q' + q);
         } else {
-            router.replace(process.env.NEXT_PUBLIC_DEFAULT_URL);
+            // router.replace(process.env.NEXT_PUBLIC_DEFAULT_URL);
+            window.location.href = process.env.NEXT_PUBLIC_DEFAULT_URL;
+            console.log(window.location);
+
         }
     }, [router]);
 

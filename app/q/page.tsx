@@ -47,7 +47,7 @@ export default async function Page({ params, searchParams }) {
         let thisDayEnds = moment(thisDayStarts).add(24, 'hours').toDate();
         let eventsThisDay = all.filter(e => {
             // if ((e.start >= thisDayStarts && e.start <= thisDayEnds) || (e.end >= thisDayStarts && e.end <= thisDayEnds)) {
-            if ((e.end >= thisDayStarts && e.start <= thisDayEnds)) {
+            if ((e.end >= thisDayStarts && e.start < thisDayEnds)) {
                 return e;
             }
         })
