@@ -66,7 +66,7 @@ export default function EventView(props) {
                     </div>
                 }
                 {event.scraped &&
-                    <div className="my-4 text-sm"> ⚠️ Warning this is scraped data, it's less reliable</div>
+                    <div className="my-4 text-sm"> ⚠️ Warning this is scraped data, it&apos;s less reliable</div>
                 }
 
 
