@@ -59,73 +59,73 @@ export async function GET(request) {
     });
 
 
-    if (running && running.value === '1') {
-        console.log('is running, aborting');
-    } else {
+    // if (running && running.value === '1') {
+    //     console.log('is running, aborting');
+    // } else {
 
-        if (running) {
-            let diff = new Date() - running.date;
+    //     if (running) {
+    //         let diff = new Date() - running.date;
 
-            if (diff < 21600000) {
-                console.log('There has not been 6 hours since last run');
+    //         if (diff < 21600000) {
+    //             console.log('There has not been 6 hours since last run');
 
-                return new Response('OK');
-            }
+    //             return new Response('OK');
+    //         }
 
+    //     }
+
+
+    await prisma.settings.upsert({
+        create: {
+            key: 'running',
+            value: '1',
+            date: new Date()
+        },
+        update: {
+            value: '1',
+            date: new Date()
+        },
+        where: {
+            key: 'running'
         }
+    })
 
 
-        await prisma.settings.upsert({
-            create: {
-                key: 'running',
-                value: '1',
-                date: new Date()
-            },
-            update: {
-                value: '1',
-                date: new Date()
-            },
-            where: {
-                key: 'running'
-            }
-        })
-
-
-        let ret = await runIcs();
-        if (!ret) {
-            console.log('Error running ICS');
-        }
-
-        ret = await newMusicNow();
-        if (!ret) {
-            console.log('Error running New music now');
-        }
-
-        ret = await scrapeSources();
-        if (!ret) {
-            console.log('Error running scrapeSources');
-        }
-
-        console.log('==================');
-        console.log('Done initalizing!');
-        console.log('==================');
-
-
-        await prisma.settings.upsert({
-            create: {
-                key: 'running',
-                value: '0',
-                date: new Date()
-            },
-            update: {
-                value: '0',
-                date: new Date()
-            },
-            where: {
-                key: 'running'
-            }
-        })
+    let ret = await runIcs();
+    if (!ret) {
+        console.log('Error running ICS');
     }
+
+    ret = await newMusicNow();
+    if (!ret) {
+        console.log('Error running New music now');
+    }
+
+    ret = await scrapeSources();
+    if (!ret) {
+        console.log('Error running scrapeSources');
+    }
+
+    console.log('==================');
+    console.log('Done initalizing!');
+    console.log('==================');
+
+
+    //     await prisma.settings.upsert({
+    //         create: {
+    //             key: 'running',
+    //             value: '0',
+    //             date: new Date()
+    //         },
+    //         update: {
+    //             value: '0',
+    //             date: new Date()
+    //         },
+    //         where: {
+    //             key: 'running'
+    //         }
+    //     })
+    // }
 
 
     return new Response('ok');
