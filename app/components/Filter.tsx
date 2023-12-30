@@ -45,9 +45,6 @@ export default function Filter(props) {
 
         const s = window.location.search;
 
-        console.log('selectFromUrl', s);
-
-
 
         if (s[0] === '?') {
             let str = s.slice(1);

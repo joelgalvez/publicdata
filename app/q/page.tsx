@@ -52,6 +52,7 @@ export default async function Page({ params, searchParams }) {
             }
         })
         let day = {
+            'id': d,
             'date': thisDayStarts,
             'events': eventsThisDay
         }
@@ -70,7 +71,7 @@ export default async function Page({ params, searchParams }) {
 
                         {days.map(day => {
                             return (
-                                <div>
+                                <div key={day.id}>
                                     {day.events.length > 0 &&
                                         <div className="">
                                             <div className="mb-2 mt-16 text-5xl lg:text-7xl px-2">{moment(day.date).format('dddd MMM Do YYYY')}</div>
