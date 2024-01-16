@@ -1,10 +1,22 @@
-FROM node:18-alpine AS base
-WORKDIR /app
-COPY . .
-RUN apk update && apk upgrade
-RUN apk add --no-cache sqlite
+FROM node:20 as build
 
-RUN npm i --production
+ENV NODE_ENV production
+
+WORKDIR /app
+
+COPY package.json package-lock.json ./
+
+RUN npm install
+
+COPY ./ ./
+
+RUN npx prisma db push 
+
 RUN npm run build
 
-CMD [ "npm", "start" ]
+EXPOSE 3000
+
+ENV PORT 3000
+ENV HOSTNAME "0.0.0.0"
+
+CMD npm run start
