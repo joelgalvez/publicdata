@@ -1,6 +1,8 @@
-import prisma from '../../../lib/prisma'
-import { upsertEvent } from '../../../lib/upsertEvent'
-import IcalExpander from 'ical-expander';
+import fs from "fs/promises";
+
+import prisma from "../../../lib/prisma";
+import { upsertEvent } from "../../../lib/upsertEvent";
+import IcalExpander from "ical-expander";
 
 // import moment from 'moment';
 
@@ -241,16 +243,27 @@ export async function runIcs() {
 
     let cacheBusting = true;
 
-    // let json = await fetch('http://publicdata.jgdev.xyz/export/?v=13', { 'cache': 'no-store' })
-    let json = await fetch(process.env.NEXT_PUBLIC_SOURCES + '?random=' + Math.round(Math.random() * 1000000000))
+    // If a sources.json file is present, use that. If not, use NEXT_PUBLIC_SOURCES
+    //
+    // TODO: Properly load config globally in a single object.
+    let json = await (async () => {
+        try {
+            return await fs.readFile('sources.json', { encoding: "utf8" }).then(file => JSON.parse(file))
+        }
+        catch (err) {
+            console.log(err)
+            return await fetch(process.env.NEXT_PUBLIC_SOURCES + '?random=' + Math.round(Math.random() * 1000000000))
         .then(response => response.json())
-
+        }
+    })()
 
     for (let calendar of json.calendars) {
         await upsertVenue(calendar);
     }
 
-    await updateLists(json.lists);
+    if ("lists" in json) { 
+        await updateLists(json.lists);
+    }
 
 
     let venuesWithUrl = await prisma.venue.findMany({ where: { NOT: [{ url: null }] } });
