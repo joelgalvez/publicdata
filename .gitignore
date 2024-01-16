@@ -35,7 +35,9 @@ yarn-error.log*
 next-env.d.ts
 
 /ics-cache/cal-*
-/prisma/*.db
 
-/prisma/*.db
 .env
+
+# Persistent data such as db files
+/data
+sources.json
