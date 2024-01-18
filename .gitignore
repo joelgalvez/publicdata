@@ -44,4 +44,3 @@ cache.db
 sources.json
 
 docker-compose.*.yml
-!docker-compose.override.yml
