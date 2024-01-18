@@ -42,3 +42,5 @@ cache.db
 
 # Sources config file
 sources.json
+
+docker-compose.*.yml
