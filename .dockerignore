@@ -39,6 +39,6 @@ next-env.d.ts
 # Persistent data such as db files
 /data
 cache.db
-
-# Sources config file
 sources.json
+
+.puppeteer/

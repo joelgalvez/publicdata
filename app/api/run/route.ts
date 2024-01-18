@@ -96,14 +96,18 @@ export async function GET(request) {
         console.log('Error running ICS');
     }
 
-    ret = await newMusicNow();
-    if (!ret) {
-        console.log('Error running New music now');
+    if (!(process.env.NEXT_PUBLIC_DISABLE_NEW_MUSIC_NOW == "true")) {
+        ret = await newMusicNow();
+        if (!ret) {
+            console.log('Error running New music now');
+        }
     }
 
-    ret = await scrapeSources();
-    if (!ret) {
-        console.log('Error running scrapeSources');
+    if (!(process.env.NEXT_PUBLIC_DISABLE_SCRAPED_SOURCES == "true")) {
+        ret = await scrapeSources();
+        if (!ret) {
+            console.log('Error running scrapeSources');
+        }
     }
 
     console.log('==================');
