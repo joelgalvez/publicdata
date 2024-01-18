@@ -3,7 +3,7 @@ services:
     image: "joelgalvez/publicdata:latest"
     build: .
     ports:
-      - 3000:3000
+      - 3000
   
   cron:
     image: "joelgalvez/publicdata:latest"
