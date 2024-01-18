@@ -5,6 +5,7 @@ import { getEvents } from '../../lib/getEvents'
 import moment from 'moment';
 
 import EventLead from '../components/EventLead';
+import Reminder from '../components/Reminder';
 import { env } from 'process';
 
 export default async function Page({ params, searchParams }) {
@@ -120,6 +121,7 @@ export default async function Page({ params, searchParams }) {
                     <Link href="/subscribe">
                         <div className="m-4 rounded-md button text-sm glow">Subscribe</div>
                     </Link>
+                    <Reminder></Reminder>
                 </div>
 
             </div>
