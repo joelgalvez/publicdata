@@ -2,8 +2,15 @@ services:
   app:
     image: "joelgalvez/publicdata:latest"
     build: .
-    volumes:
-      - ./sources.json:/app/sources.json
-      - ./.env.local:/app/.env.local
     ports:
       - 3000:3000
+  
+  cron:
+    image: "joelgalvez/publicdata:latest"
+    build: .
+    command: "cron -f"
+    depends_on:
+      app:
+        condition: service_healthy
+    healthcheck:
+      disable: true
