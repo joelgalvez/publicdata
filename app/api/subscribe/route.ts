@@ -59,6 +59,9 @@ export async function GET(request) {
                 }
                 dayText += `${timeText} - ${event.venue.title}, ${event.summary} \n\n`;
 
+
+
+
                 eventPerDayCount++;
             }
         })

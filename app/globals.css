@@ -8,6 +8,10 @@
 }
 
 
+html {
+  
+  hyphens: auto;
+}
 
 .button {
   background-color: rgb(var(--foreground-rgb));

@@ -33,10 +33,10 @@ export default function EventLead(props) {
                 </div>
 
             </div>
-            <div className="text-2xl mb-4">
+            <div className="text-2xl mb-4 break-words">
                 {event.summary}
             </div>
-            <div className="text-sm mb-4">
+            <div className="text-sm mb-4 break-words break-all">
                 {event.description.replace(/(<([^>]+)>)/gi, "").substring(0, 100)}...
             </div>
         </Link>

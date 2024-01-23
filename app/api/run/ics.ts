@@ -252,16 +252,19 @@ export async function runIcs() {
         }
         catch (err) {
             console.log(err)
+            console.log('Trying to fetch json from URL ' + process.env.NEXT_PUBLIC_SOURCES);
             return await fetch(process.env.NEXT_PUBLIC_SOURCES + '?random=' + Math.round(Math.random() * 1000000000))
-        .then(response => response.json())
+                .then(response => response.json())
         }
     })()
+
+
 
     for (let calendar of json.calendars) {
         await upsertVenue(calendar);
     }
 
-    if ("lists" in json) { 
+    if ("lists" in json) {
         await updateLists(json.lists);
     }
 

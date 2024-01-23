@@ -19,11 +19,9 @@ export default function Page({ params }) {
     }
     const router = useRouter()
 
-
     function back() {
         router.back();
     }
-
 
     const handleFocus = (event) => event.target.select();
 
@@ -35,12 +33,15 @@ export default function Page({ params }) {
                     {ok &&
                         <div className="">
                             <div className="mb-2">
-                                1. Copy the following link
+                                1. Filter your interests (on the previous screen)
+                            </div>
+                            <div className="mb-2">
+                                2. Copy the following link
                             </div>
                             <div className="my-2 mb-8">
                                 <input type="text" onClick={handleFocus} className="text-black w-full p-2 rounded-lg font-mono" value={string} />
                             </div>
-                            <div className="mb-2">2. In iCal, File &gt; New Calendar Subscription.</div>
+                            <div className="mb-2">3. In iCal, File &gt; New Calendar Subscription.</div>
                             <div className="max-w-[70rem] mb-8">
                                 <Image src="/ical.png" alt="" width={460} height={143} />
                             </div>
@@ -48,7 +49,7 @@ export default function Page({ params }) {
                             <div className="max-w-[70rem] mb-8">
                                 <Image src="/paste.png" alt="" width={547} height={135} />
                             </div> */}
-                            <div className="mb-2">4. Paste the URL above, give it a name, and change the "auto refresh" to "every day"</div>
+                            <div className="mb-2">4. Paste the URL above, give it a name, and change the &quot;auto refresh&quot; to &quot;every day&quot;</div>
                             <div className="max-w-[70rem] mb-8">
                                 <Image src="/sub.png" alt="" width={547} height={135} />
                             </div>

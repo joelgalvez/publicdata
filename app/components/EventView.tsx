@@ -17,9 +17,11 @@ export default function EventView(props) {
         <div className="" onClick={onBack}>
 
             <div className="fixed bg-opacity-95 bg-black/50 w-full h-screen right-0 top-0 ">
+
             </div >
 
             <div className="panel absolute p-4  top-0 right-0 h-screen w-[90%] lg:w-[50rem] overflow-y-auto" >
+                <div className="mb-2 cursor-pointer" onClick={onBack}>✕</div>
                 {event.venue &&
                     <div className="flex h-12 my-2 items-center gap-3">
                         <div className="w-[2rem] h-[2rem] flex items-center justify-center bg-white">
@@ -35,7 +37,7 @@ export default function EventView(props) {
                         <header className="">
                             <hgroup className="">
 
-                                <h1 className="text-7xl mb-4">
+                                <h1 className="text-3xl lg:text-7xl mb-4">
                                     {event.summary}
                                 </h1>
                                 <a className="mb-4 block underline truncate" target="_blank" href={event.url ? event.url : event?.venue.website}>{event.url ? event.url : event?.venue.website}</a>
@@ -58,7 +60,7 @@ export default function EventView(props) {
                                 {event.imageUrl &&
                                     <img className="mb-4 " src={event.imageUrl} alt="" />
                                 }
-                                <pre className="text text-xl break-normal whitespace-break-spaces">
+                                <pre className="text text-xl break-normal whitespace-break-spaces break-words">
                                     {event.description}
                                 </pre>
                             </article>
