@@ -17,7 +17,6 @@ export async function GET(request) {
         }
     });
 
-
     if (!initialized || initialized.value !== '1') {
         let tags = process.env.NEXT_PUBLIC_PINNED_TAGS?.split(',');
         for (let tag of tags) {

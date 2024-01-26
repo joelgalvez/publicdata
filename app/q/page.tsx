@@ -2,6 +2,7 @@ export const dynamic = "force-dynamic";
 
 import Link from 'next/link'
 import { getEvents } from '../../lib/getEvents'
+import { getDays } from '../../lib/getDays'
 import moment from 'moment';
 
 import EventLead from '../components/EventLead';
@@ -39,26 +40,7 @@ export default async function Page({ params, searchParams }) {
     let end = moment().add(2, 'years').toDate();
     const all = await getEvents(searchParams, start, end);
 
-    // console.log(all);
-
-
-    let days = [];
-    for (let d = 0; d < 90; d++) {
-        let thisDayStarts = moment().startOf('day').add(d, 'days').toDate();
-        let thisDayEnds = moment(thisDayStarts).add(24, 'hours').toDate();
-        let eventsThisDay = all.filter(e => {
-            // if ((e.start >= thisDayStarts && e.start <= thisDayEnds) || (e.end >= thisDayStarts && e.end <= thisDayEnds)) {
-            if ((e.end >= thisDayStarts && e.start < thisDayEnds)) {
-                return e;
-            }
-        })
-        let day = {
-            'id': d,
-            'date': thisDayStarts,
-            'events': eventsThisDay
-        }
-        days.push(day);
-    }
+    let days = getDays(all);
 
     // let month = await getEvents(monthStart, monthEnd);
 

@@ -3,7 +3,7 @@
 
 import { React, useState, useEffect, useLayoutEffect } from 'react';
 
-import { useRouter } from 'next/navigation'
+import { useRouter, useSearchParams } from 'next/navigation'
 
 import { log } from 'console';
 import Link from 'next/link'
@@ -25,9 +25,18 @@ export default function Filter(props) {
     const router = useRouter();
 
 
-    useLayoutEffect(() => {
-        selectFromURL();
-    }, [router]);
+    // useLayoutEffect(() => {
+    //     selectFromURL();
+    // }, [router]);
+
+
+    const searchParams = useSearchParams();
+    searchParams.forEach((value, key) => {
+        console.log(value, key);
+    });
+
+
+    // console.log(props.searchParams);
 
 
 
@@ -40,6 +49,7 @@ export default function Filter(props) {
     //there is probably a better way?
 
     function selectFromURL() {
+
 
 
 
@@ -190,7 +200,7 @@ export default function Filter(props) {
                                         <div className="" key={city.id}>
                                             <div className="grid grid-cols-[auto,3fr,1fr] gap-x-2">
                                                 <div className="">
-                                                    <input type="checkbox" name={'city-' + city.title} value="1" onChange={changed} />
+                                                    <input type="checkbox" name={'city-' + city.title} value="1" checked={searchParams.get('city-' + city.title) === "1"} onChange={changed} />
                                                 </div>
                                                 <div className="">
                                                     {city.title}
@@ -219,7 +229,7 @@ export default function Filter(props) {
                                             <div className="">
                                                 <div className="grid grid-cols-[auto,3fr,1fr] gap-x-2">
                                                     <div className="">
-                                                        <input type="checkbox" name={'city-' + city.title} value="1" onChange={changed} />
+                                                        <input type="checkbox" name={'city-' + city.title} value="1" checked={searchParams.get('city-' + city.title) === "1"} onChange={changed} />
                                                     </div>
                                                     <div className="">
                                                         {city.title}
@@ -264,7 +274,7 @@ export default function Filter(props) {
                                     {tag._count.events > 1 &&
                                         <div className="grid grid-cols-[auto,3fr,1fr] gap-x-2">
                                             <div className="" >
-                                                📌 <input type="checkbox" name={'tag-' + tag.title} value="1" onChange={changed} />
+                                                📌 <input type="checkbox" name={'tag-' + tag.title} value="1" checked={searchParams.get('tag-' + tag.title) === "1"} onChange={changed} />
                                             </div>
                                             <div className="">
                                                 {tag.title}
@@ -297,7 +307,7 @@ export default function Filter(props) {
                                         {tag._count.events > 1 &&
                                             <div className="grid grid-cols-[auto,3fr,1fr] gap-x-2">
                                                 <div className="">
-                                                    <input type="checkbox" name={'tag-' + tag.title} value="1" onChange={changed} />
+                                                    <input type="checkbox" name={'tag-' + tag.title} value="1" checked={searchParams.get('tag-' + tag.title) === "1"} onChange={changed} />
                                                 </div>
                                                 <div className="">
                                                     {tag.title}
