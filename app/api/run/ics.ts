@@ -4,21 +4,46 @@ import prisma from "../../../lib/prisma";
 import { upsertEvent } from "../../../lib/upsertEvent";
 import IcalExpander from "ical-expander";
 
-// import moment from 'moment';
+import moment from 'moment';
 
 
 function extractEvents(ics: string) {
 
-    let icalExpander = null;
-    try {
-        icalExpander = new IcalExpander({ ics: ics, maxIterations: 100 });
-    } catch (e) {
 
-        return false;
-        // throw new Error('Failed to expand ics');
+    //Hack: Add T000000 for the ones missing a time 
+    let lines = ics.split("\n");
+    for (const [i, el] of lines.entries()) {
+        if (lines[i].startsWith('DTSTART:')) {
+            if (lines[i].indexOf('T', 10) === -1) {
+                lines[i] = lines[i].replace(/(\r\n|\n|\r)/gm, "");
+                lines[i] = lines[i] + 'T000000';
+
+            }
+        }
     }
 
-    const events = icalExpander.between(new Date('2023-11-03T00:00:00.000Z'), new Date('2024-12-31T00:00:00.000Z'));
+    let icsAddedZeroes = lines.join("\n");
+
+
+
+
+    let icalExpander = null;
+
+    try {
+        icalExpander = new IcalExpander({ ics: icsAddedZeroes, maxIterations: 100 });
+    } catch (e) {
+        return false;
+    }
+
+    let now = Date();
+    let events = null;
+
+    // try {
+    events = icalExpander.between(new Date(), moment().add(1, 'Y').toDate());
+    // } catch (e) {
+    //     console.log('Failed icalExpander.between ' + e);
+    //     return false;
+    // }
 
 
     for (let event of events.events) {
